@@ -11,11 +11,9 @@
 //create fruit splatter
 //
 
-//can you call random a global variable from inside a class -> constructor, yes so long as the class is after the create canvas.
+//in game the gravity doesn't change as it gets closer to the bottom, only as your score gets higher
 
-let widthran = [0, windowWidth];
-let heightran = [0, windowHeight];
-let fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
+let fruits;
 let watermelon;
 let bomb; 
 let orange;
@@ -25,56 +23,62 @@ let banana;
 let pineapple;
 
 function preload(){
-  watermelon = loadImage("watermelon.jpg");
-  bomb = loadImage(""); ERROR APEAR HERE PUT IMAGE HERE
-  orange = loadImage("orange.jpg");
-  apple = loadImage("apple.jpg");
-  mango = loadImage("mago.jpg");
-  banana = loadImage("banana.jpg");
-  pineapple = loadImage("pineapple.jpg");
+  watermelon = loadImage("watermelon.png");
+  bomb = loadImage("bomb.png");
+  orange = loadImage("orange.png");
+  apple = loadImage("apple.png");
+  mango = loadImage("mago.png");
+  banana = loadImage("banana.png");
+  pineapple = loadImage("pineapple.png");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
 }
 
 class Fruit{
   constructor() {
     this.x = random(0, windowWidth);
     this.y = random(windowHeight, windowHeight + random(100, 400));
-    this.dx = random[widthran];
-    this.dy = random[heightran];
-    this.size = random[50, 100];
-    this.type = random[fruits];
+    this.size = random(50, 100);
+    this.type = random(fruits);
+    this.topHeight = random(0, windowHeight - windowHeight/3);
   }
 
   display(){
     //check what fruit then display it
     if (this.type === "watermelon"){
-      image(watermelon, this.x, this.y, this.size)
+      image(watermelon, this.x, this.y, this.size);
     }
     else if (this.type === "orange"){
-      image(orange, this.x, this.y, this.size)
+      image(orange, this.x, this.y, this.size);
     }
     else if (this.type === "bomb"){
-      image(bomb, this.x, this.y, this.size)
+      image(bomb, this.x, this.y, this.size);
     }
     else if (this.type === "apple"){
-      image(apple, this.x, this.y, this.size)
+      image(apple, this.x, this.y, this.size);
     }
     else if (this.type === "mango"){
-      image(mango, this.x, this.y, this.size)
+      image(mango, this.x, this.y, this.size);
     }
     else if (this.type === "banana"){
-      image(banana, this.x, this.y, this.size)
+      image(banana, this.x, this.y, this.size);
     }
     else if (this.type === "pineapple"){
-      image(pineapple, this.x, this.y, this.size)
+      image(pineapple, this.x, this.y, this.size);
     }
   }
 
   gravity(){
     //make the fruit fall back down after a certain point
+    if (this.y > this.topHeight){
+      this.y += 1;
+    }
+    else {
+      this.y -= 1;
+    }
   }
 
   sliced(){
@@ -82,6 +86,15 @@ class Fruit{
   }
 }
 
+let fruitArray = [];
+
 function draw() {
   background(220);
+}
+
+function mousePressed(){
+  let fruit = new Fruit();
+  fruitArray.push(fruit);
+  fruit.gravity();
+  fruit.display();
 }
