@@ -40,6 +40,7 @@ function setup() {
 class Fruit{
   constructor() {
     this.x = random(0, windowWidth);
+    this.startX = this.x;
     this.y = random(windowHeight, windowHeight + random(100, 400));
     this.size = random(50, 100);
     this.type = random(fruits);
@@ -74,11 +75,17 @@ class Fruit{
   gravity(){
     //make the fruit fall back down after a certain point
     if (this.y > this.topHeight){
-      this.y += 1;
+      this.y -= 1;
+      this.x += random();
     }
     else {
-      this.y -= 1;
+      this.y += 1;
+      this.x += random();
     }
+  }
+
+  isDead(){
+    return this.y > windowHeight && this.x > this.startX;
   }
 
   sliced(){
@@ -89,12 +96,23 @@ class Fruit{
 let fruitArray = [];
 
 function draw() {
-  background(220);
+  background("white");
+
+}
+
+function spawnFruit(){
+  let theFruit = new Fruit();
+  fruitArray.push(theFruit);
+  theFruit.sliced();
+  fruitArray[i].gravity();
+  fruitArray[i].display();
+
+  //remove if needed
+  if (fruitArray[i].isDead()){
+    fruitArray.splice(i, 1);
+  }
 }
 
 function mousePressed(){
-  let fruit = new Fruit();
-  fruitArray.push(fruit);
-  fruit.gravity();
-  fruit.display();
+  spawnFruit();
 }
