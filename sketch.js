@@ -13,6 +13,8 @@
 
 //in game the gravity doesn't change as it gets closer to the bottom, only as your score gets higher
 
+//stuck on getting the fruit to continuously display on screen 
+
 let fruits;
 let watermelon;
 let bomb; 
@@ -35,6 +37,7 @@ function preload(){
 function setup() {
   createCanvas(windowWidth, windowHeight);
   fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
+  imageMode(CENTER);
 }
 
 class Fruit{
@@ -42,7 +45,8 @@ class Fruit{
     this.x = random(0, windowWidth);
     this.startX = this.x;
     this.y = random(windowHeight, windowHeight + random(100, 400));
-    this.size = random(50, 100);
+    this.fruitWidth = random(30, 70);
+    this.fruitHeight = random(50, 100);
     this.type = random(fruits);
     this.topHeight = random(0, windowHeight - windowHeight/3);
   }
@@ -50,26 +54,26 @@ class Fruit{
   display(){
     //check what fruit then display it
     if (this.type === "watermelon"){
-      image(watermelon, this.x, this.y, this.size);
+      image(watermelon, this.x, this.y, this.fruitWidth, this.fruitWidth);
     }
     else if (this.type === "orange"){
-      image(orange, this.x, this.y, this.size);
+      image(orange, this.x, this.y, this.fruitWidth, this.fruitWidth);
     }
     else if (this.type === "bomb"){
-      image(bomb, this.x, this.y, this.size);
+      image(bomb, this.x, this.y, this.fruitWidth, this.fruitWidth);
     }
     else if (this.type === "apple"){
-      image(apple, this.x, this.y, this.size);
+      image(apple, this.x, this.y, this.fruitWidth, this.fruitWidth);
     }
     else if (this.type === "mango"){
-      image(mango, this.x, this.y, this.size);
+      image(mango, this.x, this.y, this.fruitWidth, this.fruitWidth);
     }
-    else if (this.type === "banana"){
-      image(banana, this.x, this.y, this.size);
-    }
-    else if (this.type === "pineapple"){
-      image(pineapple, this.x, this.y, this.size);
-    }
+    // else if (this.type === "banana"){
+    //   image(banana, this.x, this.y, this.fruitWidth, this.fruitHeight); THESE TWO COMMENTED OUT BECAUSE THEY CANT BE SQUARE BUT SQUARE IS EASY TO DETECT COLLISION
+    // }
+    // else if (this.type === "pineapple"){
+    //   image(pineapple, this.x, this.y, this.fruitWidth, this.fruitHeight);
+    // }
   }
 
   gravity(){
@@ -90,6 +94,9 @@ class Fruit{
 
   sliced(){
     //check if the mouse has hit it, if so, cut in half?
+    if (mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2){ //cut from bottom right corner 
+
+    }
   }
 }
 
@@ -100,19 +107,25 @@ function draw() {
 
 }
 
-function spawnFruit(){
-  let theFruit = new Fruit();
-  fruitArray.push(theFruit);
-  theFruit.sliced();
-  fruitArray[i].gravity();
-  fruitArray[i].display();
+// function spawnFruit(){
+//   let theFruit = new Fruit();
+//   fruitArray.push(theFruit);
+//   theFruit.sliced();
+//   theFruit.gravity();
+//   theFruit.display();
 
-  //remove if needed
-  if (fruitArray[i].isDead()){
-    fruitArray.splice(i, 1);
-  }
-}
+//   //remove if needed
+//   if (theFruit.isDead()){
+//     fruitArray.splice(theFruit, 1);
+//   }
+// }
 
 function mousePressed(){
-  spawnFruit();
+  let theFruit = new Fruit();
+  fruitArray.push(theFruit);
+  for (let i = 0; i < 100; i++){
+    theFruit.sliced();
+    theFruit.gravity();
+    theFruit.display();
+  }
 }
