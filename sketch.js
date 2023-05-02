@@ -42,13 +42,14 @@ function setup() {
 
 class Fruit{
   constructor() {
-    this.x = random(0, windowWidth);
-    this.startX = this.x;
-    this.y = random(windowHeight, windowHeight + random(100, 400));
-    this.fruitWidth = random(30, 70);
-    this.fruitHeight = random(50, 100);
+    this.y = Math.floor(random(windowHeight, windowHeight + random(210, 250)));
+    this.fruitWidth = Math.floor(random(150, 200));
+    this.fruitHeight = Math.floor(random(160, 210));
     this.type = random(fruits);
-    this.topHeight = random(0, windowHeight - windowHeight/3);
+    this.x = Math.floor(random(this.fruitWidth, windowWidth));
+    this.startX = this.x;
+    this.topHeight = Math.floor(windowHeight/2 - random(25, 300));
+    this.dy = -15;
   }
 
   display(){
@@ -68,24 +69,27 @@ class Fruit{
     else if (this.type === "mango"){
       image(mango, this.x, this.y, this.fruitWidth, this.fruitWidth);
     }
-    // else if (this.type === "banana"){
-    //   image(banana, this.x, this.y, this.fruitWidth, this.fruitHeight); THESE TWO COMMENTED OUT BECAUSE THEY CANT BE SQUARE BUT SQUARE IS EASY TO DETECT COLLISION
-    // }
-    // else if (this.type === "pineapple"){
-    //   image(pineapple, this.x, this.y, this.fruitWidth, this.fruitHeight);
-    // }
+    else if (this.type === "banana"){
+      image(banana, this.x, this.y, this.fruitWidth, this.fruitHeight); //THESE TWO COMMENTED OUT BECAUSE THEY CANT BE SQUARE BUT SQUARE IS EASY TO DETECT COLLISION
+    }
+    else if (this.type === "pineapple"){
+      image(pineapple, this.x, this.y, this.fruitWidth, this.fruitHeight);
+    }
   }
 
   gravity(){
+    this.y += this.dy;
+
+    this.dy += 0.2; //GRAVITYYYYYYY
     //make the fruit fall back down after a certain point
-    if (this.y > this.topHeight){
-      this.y -= 1;
-      this.x += random();
-    }
-    else {
-      this.y += 1;
-      this.x += random();
-    }
+    // if (this.y > this.topHeight){ //go up
+    //   this.y -= 1; 
+    // }
+    // if (this.y === this.topHeight - 1){ //go down
+    //   while (this.y <= this.topHeight && this.y < windowHeight + 300){
+    //     this.y += 1;
+    //   }
+    // }
   }
 
   isDead(){
@@ -104,28 +108,24 @@ let fruitArray = [];
 
 function draw() {
   background("white");
+  for (let i = fruitArray.length - 1; i >= 0; i--){
+    //fruitArray[i].sliced();
+    fruitArray[i].gravity();
+    fruitArray[i].display();
 
+    //remove if needed
+    // if (fruitArray[i].isDead()){
+    //   fruitArray.splice(i, 1);
+    // }
+  }
 }
 
-// function spawnFruit(){
-//   let theFruit = new Fruit();
-//   fruitArray.push(theFruit);
-//   theFruit.sliced();
-//   theFruit.gravity();
-//   theFruit.display();
-
-//   //remove if needed
-//   if (theFruit.isDead()){
-//     fruitArray.splice(theFruit, 1);
-//   }
-// }
-
-function mousePressed(){
+function spawnFruit(){
   let theFruit = new Fruit();
   fruitArray.push(theFruit);
-  for (let i = 0; i < 100; i++){
-    theFruit.sliced();
-    theFruit.gravity();
-    theFruit.display();
-  }
+  //fruitArray.pop();
+}
+
+function mousePressed(){
+  spawnFruit();
 }
