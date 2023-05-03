@@ -24,3 +24,4 @@ Create a version of the FRUIT NINJA game where you can slice different types of 
 - Combos
 - High score function 
 - When you hit a bomb and the game ends there's an effect of it exploding and making the screen dark
+- 3d fruit

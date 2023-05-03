@@ -2,18 +2,14 @@
 // Macayla Buckmaster
 // Date
 
-//create a ball that is affected by gravity
-//create a ball that rotates while in the air
+//make the fruit appear not when mouse clicked but at certain times to develop slicing
 //create a ball that explodes when your mouse hits it
 //create a blade effect for the mouse
 //create a fruit that gets thrown in the air, then exploded by the mouse blade,  then falls back down
 //create background
 //create fruit splatter
-//
 
 //in game the gravity doesn't change as it gets closer to the bottom, only as your score gets higher
-
-//stuck on getting the fruit to continuously display on screen 
 
 let fruits;
 let watermelon;
@@ -47,49 +43,80 @@ class Fruit{
     this.fruitHeight = Math.floor(random(160, 210));
     this.type = random(fruits);
     this.x = Math.floor(random(this.fruitWidth, windowWidth));
-    this.startX = this.x;
     this.topHeight = Math.floor(windowHeight/2 - random(25, 300));
-    this.dy = -15;
+    this.dy = -22;
+    this.dx = 1;
+    this.startX = this.x;
   }
 
   display(){
     //check what fruit then display it
     if (this.type === "watermelon"){
-      image(watermelon, this.x, this.y, this.fruitWidth, this.fruitWidth);
+      push();
+      translate(this.x, this.y);
+      rotate(frameCount/25);
+      image(watermelon, 0, 0, this.fruitWidth, this.fruitHeight + 50);
+      pop();
     }
     else if (this.type === "orange"){
-      image(orange, this.x, this.y, this.fruitWidth, this.fruitWidth);
+      push();
+      translate(this.x, this.y);
+      rotate(frameCount/25);
+      image(orange, 0, 0, this.fruitWidth, this.fruitWidth);
+      pop();
     }
     else if (this.type === "bomb"){
-      image(bomb, this.x, this.y, this.fruitWidth, this.fruitWidth);
+      push();
+      translate(this.x, this.y);
+      rotate(frameCount/25);
+      image(bomb, 0, 0, this.fruitWidth + 50, this.fruitWidth);
+      pop();
     }
     else if (this.type === "apple"){
-      image(apple, this.x, this.y, this.fruitWidth, this.fruitWidth);
+      push();
+      translate(this.x, this.y);
+      rotate(frameCount/25);
+      image(apple, 0, 0, this.fruitWidth, this.fruitWidth);
+      pop();
     }
     else if (this.type === "mango"){
-      image(mango, this.x, this.y, this.fruitWidth, this.fruitWidth);
+      push();
+      translate(this.x, this.y);
+      rotate(frameCount/25);
+      image(mango, 0, 0, this.fruitWidth, this.fruitWidth);
+      pop();
     }
     else if (this.type === "banana"){
-      image(banana, this.x, this.y, this.fruitWidth, this.fruitHeight); //THESE TWO COMMENTED OUT BECAUSE THEY CANT BE SQUARE BUT SQUARE IS EASY TO DETECT COLLISION
+      push();
+      translate(this.x, this.y);
+      rotate(frameCount/25);
+      image(banana, 0, 0, this.fruitWidth + 100, this.fruitHeight); 
+      pop();
     }
     else if (this.type === "pineapple"){
-      image(pineapple, this.x, this.y, this.fruitWidth, this.fruitHeight);
+      push();
+      translate(this.x, this.y);
+      rotate(frameCount/25);
+      image(pineapple, 0, 0, this.fruitWidth, this.fruitHeight);
+      pop();
     }
   }
 
   gravity(){
-    this.y += this.dy;
-
-    this.dy += 0.2; //GRAVITYYYYYYY
-    //make the fruit fall back down after a certain point
-    // if (this.y > this.topHeight){ //go up
-    //   this.y -= 1; 
-    // }
-    // if (this.y === this.topHeight - 1){ //go down
-    //   while (this.y <= this.topHeight && this.y < windowHeight + 300){
-    //     this.y += 1;
-    //   }
-    // }
+    if (this.startX < windowWidth/2){
+      this.y += this.dy;
+      this.x += this.dx;
+  
+      this.dy += 0.4; 
+      this.dx += 0.2;
+    }
+    else if (this.startX > windowWidth/2){
+      this.y += this.dy;
+      this.x += this.dx;
+  
+      this.dy += 0.4; 
+      this.dx -= 0.2;
+    }
   }
 
   isDead(){
