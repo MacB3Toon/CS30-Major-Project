@@ -2,14 +2,12 @@
 // Macayla Buckmaster
 // Date
 
-//make the fruit appear not when mouse clicked but at certain times to develop slicing
-//create a ball that explodes when your mouse hits it
+//fix at what speed the fruit rotates 
+//create sliced display within clas fruit
 //create a blade effect for the mouse
 //create a fruit that gets thrown in the air, then exploded by the mouse blade,  then falls back down
 //create background
 //create fruit splatter
-
-//in game the gravity doesn't change as it gets closer to the bottom, only as your score gets higher
 
 let fruits;
 let watermelon;
@@ -19,6 +17,7 @@ let apple;
 let mango;
 let banana; 
 let pineapple;
+let fruitTimer;
 
 function preload(){
   watermelon = loadImage("watermelon.png");
@@ -34,13 +33,14 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
   imageMode(CENTER);
+  fruitTimer = new Timer(3000);
+  fruitTimer.start();
 }
 
 class Fruit{
   constructor() {
     this.y = Math.floor(random(windowHeight, windowHeight + random(210, 250)));
     this.fruitWidth = Math.floor(random(150, 200));
-    this.fruitHeight = Math.floor(random(160, 210));
     this.type = random(fruits);
     this.x = Math.floor(random(this.fruitWidth, windowWidth));
     this.topHeight = Math.floor(windowHeight/2 - random(25, 300));
@@ -51,55 +51,31 @@ class Fruit{
 
   display(){
     //check what fruit then display it
+    push();
+    translate(this.x, this.y);
+    rotate(frameCount * 2);//use some variable within the class that updates regularly instead of frame count because frame count is too slow. 
     if (this.type === "watermelon"){
-      push();
-      translate(this.x, this.y);
-      rotate(frameCount/25);
-      image(watermelon, 0, 0, this.fruitWidth, this.fruitHeight + 50);
-      pop();
+      image(watermelon, 0, 0, this.fruitWidth, this.fruitWidth + 100);
     }
     else if (this.type === "orange"){
-      push();
-      translate(this.x, this.y);
-      rotate(frameCount/25);
       image(orange, 0, 0, this.fruitWidth, this.fruitWidth);
-      pop();
     }
     else if (this.type === "bomb"){
-      push();
-      translate(this.x, this.y);
-      rotate(frameCount/25);
       image(bomb, 0, 0, this.fruitWidth + 50, this.fruitWidth);
-      pop();
     }
     else if (this.type === "apple"){
-      push();
-      translate(this.x, this.y);
-      rotate(frameCount/25);
       image(apple, 0, 0, this.fruitWidth, this.fruitWidth);
-      pop();
     }
     else if (this.type === "mango"){
-      push();
-      translate(this.x, this.y);
-      rotate(frameCount/25);
       image(mango, 0, 0, this.fruitWidth, this.fruitWidth);
-      pop();
     }
     else if (this.type === "banana"){
-      push();
-      translate(this.x, this.y);
-      rotate(frameCount/25);
-      image(banana, 0, 0, this.fruitWidth + 100, this.fruitHeight); 
-      pop();
+      image(banana, 0, 0, this.fruitWidth + 100, this.fruitWidth); 
     }
     else if (this.type === "pineapple"){
-      push();
-      translate(this.x, this.y);
-      rotate(frameCount/25);
-      image(pineapple, 0, 0, this.fruitWidth, this.fruitHeight);
-      pop();
+      image(pineapple, 0, 0, this.fruitWidth, this.fruitWidth + 50);
     }
+    pop();
   }
 
   gravity(){
@@ -124,7 +100,6 @@ class Fruit{
   }
 
   sliced(){
-    //check if the mouse has hit it, if so, cut in half?
     if (mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2){ //cut from bottom right corner 
 
     }
@@ -135,6 +110,10 @@ let fruitArray = [];
 
 function draw() {
   background("white");
+  if (fruitTimer.expired()){
+    spawnFruit();
+    fruitTimer.start();
+  }
   for (let i = fruitArray.length - 1; i >= 0; i--){
     //fruitArray[i].sliced();
     fruitArray[i].gravity();
@@ -150,7 +129,10 @@ function draw() {
 function spawnFruit(){
   let theFruit = new Fruit();
   fruitArray.push(theFruit);
-  //fruitArray.pop();
+}
+
+function mouseDragged(){
+  //display blade here
 }
 
 function mousePressed(){
