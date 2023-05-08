@@ -2,12 +2,14 @@
 // Macayla Buckmaster
 // Date
 
-//fix at what speed the fruit rotates 
-//create sliced display within clas fruit
+//create sliced display within class fruit
+//FRUIT IS SPASAMING AND CHANGING SIZE WHEN SLICED...WHYYYYYYYYYYYYYYYYY
 //create a blade effect for the mouse
-//create a fruit that gets thrown in the air, then exploded by the mouse blade,  then falls back down
 //create background
 //create fruit splatter
+//create pause button
+//create home screen and death screens
+//add sounds
 
 let fruits;
 let watermelon;
@@ -19,20 +21,48 @@ let banana;
 let pineapple;
 let fruitTimer;
 
+//sliced fruit images
+let appleBottomLeft;
+let appleBottomRight;
+let bananaBottomLeft;
+let bananaBottomRight;
+let bombExploding;
+let mangoBottomRight;
+let mangoBottomLeft;
+let orangeBottomRight;
+let orangeBottomLeft;
+let pineappleBottomRight;
+let pineappleBottomLeft;
+let watermelonBottomRight;
+let watermelonBottomLeft;
+
 function preload(){
-  watermelon = loadImage("watermelon.png");
-  bomb = loadImage("bomb.png");
-  orange = loadImage("orange.png");
-  apple = loadImage("apple.png");
-  mango = loadImage("mago.png");
-  banana = loadImage("banana.png");
-  pineapple = loadImage("pineapple.png");
+  watermelon = loadImage("wholefruit/watermelon.png");
+  bomb = loadImage("wholefruit/bomb.png");
+  orange = loadImage("wholefruit/orange.png");
+  apple = loadImage("wholefruit/apple.png");
+  mango = loadImage("wholefruit/mago.png");
+  banana = loadImage("wholefruit/banana.png");
+  pineapple = loadImage("wholefruit/pineapple.png");
+  appleBottomLeft = loadImage("slicedfruit/applecutinhalf-bottomleft.png");
+  appleBottomRight = loadImage("slicedfruit/applecutinhalf-bottomright.png");
+  bananaBottomLeft = loadImage("slicedfruit/bananacutinhalf-bottomleft.png");
+  bananaBottomRight = loadImage("slicedfruit/bananacutinhalf-bottomright.png");
+  bombExploding = loadImage("slicedfruit/bombexploding.png");
+  mangoBottomRight = loadImage("slicedfruit/mangocutinhalf-bottomright.png");
+  mangoBottomLeft = loadImage("slicedfruit/mangocutinhalf-bottomleft.png");
+  orangeBottomRight = loadImage("slicedfruit/orangecutinhalf-bottomright.png");
+  orangeBottomLeft = loadImage("slicedfruit/orangecutinhalf-bottomleft.png");
+  pineappleBottomRight = loadImage("slicedfruit/pineapplecutinhalf-bottomright.png");
+  pineappleBottomLeft = loadImage("slicedfruit/pineapplecutinhalf-bottomleft.png");
+  watermelonBottomRight = loadImage("slicedfruit/watermeloncutinhalf-bottomright.png");
+  watermelonBottomLeft = loadImage("slicedfruit/watermeloncutinhalf-bottomleft.png");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
-  imageMode(CENTER);
+  imageMode(CENTER); 
   fruitTimer = new Timer(3000);
   fruitTimer.start();
 }
@@ -47,35 +77,107 @@ class Fruit{
     this.dy = -22;
     this.dx = 1;
     this.startX = this.x;
+    this.time = 100;
+    this.directionSliced;
+    this.possibleSlice = false;
   }
 
   display(){
-    //check what fruit then display it
+    //check what fruit, if sliced then display it
     push();
     translate(this.x, this.y);
-    rotate(frameCount * 2);//use some variable within the class that updates regularly instead of frame count because frame count is too slow. 
+    rotate(this.time); 
     if (this.type === "watermelon"){
-      image(watermelon, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+      if (this.possibleSlice){
+        if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
+          image(watermelonBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+        }
+        else if (this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
+          image(watermelonBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+        }
+      }
+      else{
+        image(watermelon, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+      }
     }
     else if (this.type === "orange"){
-      image(orange, 0, 0, this.fruitWidth, this.fruitWidth);
+      if (this.possibleSlice){
+        if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
+          image(orangeBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
+        }
+        else if (this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
+          image(orangeBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth);
+        }
+      }
+      else{
+        image(orange, 0, 0, this.fruitWidth, this.fruitWidth);
+      }
     }
     else if (this.type === "bomb"){
-      image(bomb, 0, 0, this.fruitWidth + 50, this.fruitWidth);
+      if (this.possibleSlice){
+        if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft" || this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
+          image(bombExploding, 0, 0, this.fruitWidth, this.fruitWidth);
+        }
+      }
+      else{
+        image(bomb, 0, 0, this.fruitWidth, this.fruitWidth);
+      }
     }
     else if (this.type === "apple"){
-      image(apple, 0, 0, this.fruitWidth, this.fruitWidth);
+      console.log(this.fruitWidth);
+      if (this.possibleSlice){
+        if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
+          image(appleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
+        }
+        else if (this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
+          image(appleBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth);
+        }
+      }
+      else{
+        image(apple, 0, 0, this.fruitWidth, this.fruitWidth);
+      }
     }
     else if (this.type === "mango"){
-      image(mango, 0, 0, this.fruitWidth, this.fruitWidth);
+      if (this.possibleSlice){
+        if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
+          image(mangoBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
+        }
+        else if (this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
+          image(mangoBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth);
+        }
+      }
+      else{
+        image(mango, 0, 0, this.fruitWidth, this.fruitWidth);
+      }
     }
     else if (this.type === "banana"){
-      image(banana, 0, 0, this.fruitWidth + 100, this.fruitWidth); 
+      if (this.possibleSlice){
+        if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
+          image(bananaBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+        }
+        else if (this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
+          image(bananaBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+        }
+      }
+      else{
+        image(banana, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+      }
     }
     else if (this.type === "pineapple"){
-      image(pineapple, 0, 0, this.fruitWidth, this.fruitWidth + 50);
+      if (this.possibleSlice){
+        if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
+          image(pineappleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+        }
+        else if (this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
+          image(pineappleBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+        }
+      }
+      else{
+        image(pineapple, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+      }
     }
     pop();
+    this.time += 5;
   }
 
   gravity(){
@@ -100,8 +202,23 @@ class Fruit{
   }
 
   sliced(){
-    if (mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2){ //cut from bottom right corner 
-
+    if (mouseIsPressed === true){
+      if (mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2){ //cut from bottom right corner 
+        this.directionSliced = "bottomRight";
+        this.possibleSlice = true;
+      }
+      if (mouseX < this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2){ //cut from bottom left corner 
+        this.directionSliced = "bottomLeft";
+        this.possibleSlice = true;
+      }
+      if (mouseX > this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2){ //cut from top right corner 
+        this.directionSliced = "topRight";
+        this.possibleSlice = true;
+      }
+      if (mouseX < this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2){ //cut from top right corner 
+        this.directionSliced = "topLeft";
+        this.possibleSlice = true;
+      }
     }
   }
 }
@@ -109,13 +226,13 @@ class Fruit{
 let fruitArray = [];
 
 function draw() {
-  background("white");
+  background("grey");
   if (fruitTimer.expired()){
     spawnFruit();
     fruitTimer.start();
   }
   for (let i = fruitArray.length - 1; i >= 0; i--){
-    //fruitArray[i].sliced();
+    fruitArray[i].sliced();
     fruitArray[i].gravity();
     fruitArray[i].display();
 
@@ -133,8 +250,4 @@ function spawnFruit(){
 
 function mouseDragged(){
   //display blade here
-}
-
-function mousePressed(){
-  spawnFruit();
 }
