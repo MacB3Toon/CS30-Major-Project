@@ -2,8 +2,7 @@
 // Macayla Buckmaster
 // Date
 
-//create sliced display within class fruit
-//FRUIT IS SPASAMING AND CHANGING SIZE WHEN SLICED...WHYYYYYYYYYYYYYYYYY
+//change mouse is pressed to a function outside of class mouseDragged
 //create a blade effect for the mouse
 //create background
 //create fruit splatter
@@ -153,27 +152,27 @@ class Fruit{
     else if (this.type === "banana"){
       if (this.possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
-          image(bananaBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+          image(bananaBottomRight, 0, 0, this.fruitWidth + 100, this.fruitWidth);
         }
         else if (this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
-          image(bananaBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+          image(bananaBottomLeft, 0, 0, this.fruitWidth + 100, this.fruitWidth);
         }
       }
       else{
-        image(banana, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+        image(banana, 0, 0, this.fruitWidth + 100, this.fruitWidth);
       }
     }
     else if (this.type === "pineapple"){
       if (this.possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
-          image(pineappleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+          image(pineappleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 200);
         }
         else if (this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
-          image(pineappleBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+          image(pineappleBottomLeft, 0, 0, this.fruitWidth, this.fruitWidth + 200);
         }
       }
       else{
-        image(pineapple, 0, 0, this.fruitWidth, this.fruitWidth + 100);
+        image(pineapple, 0, 0, this.fruitWidth, this.fruitWidth + 200);
       }
     }
     pop();
