@@ -2,7 +2,8 @@
 // Macayla Buckmaster
 // Date
 
-//change mouse is pressed to a function outside of class mouseDragged
+//line 205 figuring out if the mouse is within the fruit
+//only call sliced in mousedown pressed thing
 //create a blade effect for the mouse
 //create background
 //create fruit splatter
@@ -202,19 +203,19 @@ class Fruit{
 
   sliced(){
     if (mouseIsPressed === true){
-      if (mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2){ //cut from bottom right corner 
+      if ((mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2) && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from bottom right corner 
         this.directionSliced = "bottomRight";
         this.possibleSlice = true;
       }
-      if (mouseX < this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2){ //cut from bottom left corner 
+      if ((mouseX < this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2)  && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from bottom left corner 
         this.directionSliced = "bottomLeft";
         this.possibleSlice = true;
       }
-      if (mouseX > this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2){ //cut from top right corner 
+      if ((mouseX > this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2) && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from top right corner 
         this.directionSliced = "topRight";
         this.possibleSlice = true;
       }
-      if (mouseX < this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2){ //cut from top right corner 
+      if ((mouseX < this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2)  && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from top right corner 
         this.directionSliced = "topLeft";
         this.possibleSlice = true;
       }
