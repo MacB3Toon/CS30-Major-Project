@@ -2,9 +2,8 @@
 // Macayla Buckmaster
 // Date
 
-//line 205 figuring out if the mouse is within the fruit
-//only call sliced in mousedown pressed thing
 //create a blade effect for the mouse
+//get fruit to appear in time with game settings
 //create background
 //create fruit splatter
 //create pause button
@@ -36,7 +35,7 @@ let pineappleBottomLeft;
 let watermelonBottomRight;
 let watermelonBottomLeft;
 
-function preload(){
+function preload(){ //preloads images for fruit
   watermelon = loadImage("wholefruit/watermelon.png");
   bomb = loadImage("wholefruit/bomb.png");
   orange = loadImage("wholefruit/orange.png");
@@ -59,7 +58,7 @@ function preload(){
   watermelonBottomLeft = loadImage("slicedfruit/watermeloncutinhalf-bottomleft.png");
 }
 
-function setup() {
+function setup() { //setting up the basics of the game
   createCanvas(windowWidth, windowHeight);
   fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
   imageMode(CENTER); 
@@ -67,8 +66,8 @@ function setup() {
   fruitTimer.start();
 }
 
-class Fruit{
-  constructor() {
+class Fruit{ //all of the functions and variables for each single fruit
+  constructor() { //variables required for each fruit
     this.y = Math.floor(random(windowHeight, windowHeight + random(210, 250)));
     this.fruitWidth = Math.floor(random(150, 200));
     this.type = random(fruits);
@@ -80,6 +79,7 @@ class Fruit{
     this.time = 100;
     this.directionSliced;
     this.possibleSlice = false;
+    this.fruitDroppedArray = [];
   }
 
   display(){
@@ -181,6 +181,7 @@ class Fruit{
   }
 
   gravity(){
+    //fruit moves up then down, and to the opposite side of the screen from where its x first was
     if (this.startX < windowWidth/2){
       this.y += this.dy;
       this.x += this.dx;
@@ -198,7 +199,16 @@ class Fruit{
   }
 
   isDead(){
-    return this.y > windowHeight && this.x > this.startX;
+    //the fruit is off the screen
+    if (this.possibleSlice === false){
+      //the fruit is off the screen and was not hit by the blade
+      this.fruitDroppedArray += 1;
+    }
+    if (this.fruitDroppedArray.length === 3){
+      //too many fruit dropped before it was sliced, game over
+      deathScreeen();
+    }
+    return this.y > windowHeight;
   }
 
   sliced(){
@@ -237,9 +247,9 @@ function draw() {
     fruitArray[i].display();
 
     //remove if needed
-    // if (fruitArray[i].isDead()){
-    //   fruitArray.splice(i, 1);
-    // }
+    if (fruitArray[i].isDead()){
+      fruitArray.splice(i, 1);
+    }
   }
 }
 
@@ -250,4 +260,13 @@ function spawnFruit(){
 
 function mouseDragged(){
   //display blade here
+
+}
+
+function startScreen(){
+  //start screen
+}
+
+function deathScreeen(){
+
 }
