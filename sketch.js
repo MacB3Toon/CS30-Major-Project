@@ -2,8 +2,11 @@
 // Macayla Buckmaster
 // Date
 
+//fruit array drop thing not working its automatically seeing one fruit on the screen as three fruit deaths.
 //create a blade effect for the mouse
 //get fruit to appear in time with game settings
+//make bomb function
+//create deathscreen 
 //create background
 //create fruit splatter
 //create pause button
@@ -19,6 +22,8 @@ let mango;
 let banana; 
 let pineapple;
 let fruitTimer;
+let fruitDroppedArray = [];
+let fruitDeath = false;
 
 //sliced fruit images
 let appleBottomLeft;
@@ -79,7 +84,6 @@ class Fruit{ //all of the functions and variables for each single fruit
     this.time = 100;
     this.directionSliced;
     this.possibleSlice = false;
-    this.fruitDroppedArray = [];
   }
 
   display(){
@@ -116,7 +120,11 @@ class Fruit{ //all of the functions and variables for each single fruit
     else if (this.type === "bomb"){
       if (this.possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft" || this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
+          this.fruitWidth += 25;
           image(bombExploding, 0, 0, this.fruitWidth, this.fruitWidth);
+          if (this.fruitWidth >= 1000){
+            deathScreeen();
+          }
         }
       }
       else{
@@ -124,7 +132,6 @@ class Fruit{ //all of the functions and variables for each single fruit
       }
     }
     else if (this.type === "apple"){
-      console.log(this.fruitWidth);
       if (this.possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(appleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
@@ -199,16 +206,15 @@ class Fruit{ //all of the functions and variables for each single fruit
   }
 
   isDead(){
-    //the fruit is off the screen
-    if (this.possibleSlice === false){
+    //the fruit is off the screen and not sliced
+    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX){
       //the fruit is off the screen and was not hit by the blade
-      this.fruitDroppedArray += 1;
+      console.log("yasss"0);
     }
-    if (this.fruitDroppedArray.length === 3){
-      //too many fruit dropped before it was sliced, game over
-      deathScreeen();
-    }
-    return this.y > windowHeight;
+    // if (this.fruitDroppedArray.length === 3){
+    //   //too many fruit dropped before it was sliced, game over
+    //   deathScreeen();
+    // }
   }
 
   sliced(){
@@ -245,12 +251,14 @@ function draw() {
     fruitArray[i].sliced();
     fruitArray[i].gravity();
     fruitArray[i].display();
+    fruitArray[i].isDead();
 
     //remove if needed
-    if (fruitArray[i].isDead()){
-      fruitArray.splice(i, 1);
-    }
+    // if (fruitArray[i].isDead()){
+    //   fruitArray.splice(i, 1);
+    // }
   }
+  deathScreeen();
 }
 
 function spawnFruit(){
@@ -268,5 +276,12 @@ function startScreen(){
 }
 
 function deathScreeen(){
-
+  if (fruitDeath){
+    fruitDroppedArray.push(1);
+  }
+  if (fruitDroppedArray.length === 4){
+    //too many fruit dropped before it was sliced, game over
+    noLoop();
+    background("white");
+  }
 }
