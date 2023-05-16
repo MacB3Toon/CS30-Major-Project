@@ -207,9 +207,9 @@ class Fruit{ //all of the functions and variables for each single fruit
 
   isDead(){
     //the fruit is off the screen and not sliced
-    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX){
+    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && //PUT SOMETHING HERE TO MAKE SURE THAT IT DOESNT JUST RECOGNIZE THE FRUIT AS SOON AS ITS MADE OFF SCREEN){
       //the fruit is off the screen and was not hit by the blade
-      console.log("yasss"0);
+      fruitDeath = true;
     }
     // if (this.fruitDroppedArray.length === 3){
     //   //too many fruit dropped before it was sliced, game over
@@ -277,7 +277,9 @@ function startScreen(){
 
 function deathScreeen(){
   if (fruitDeath){
+    console.log(fruitDroppedArray);
     fruitDroppedArray.push(1);
+    fruitDeath = false;
   }
   if (fruitDroppedArray.length === 4){
     //too many fruit dropped before it was sliced, game over
