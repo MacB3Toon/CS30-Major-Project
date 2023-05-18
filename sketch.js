@@ -23,7 +23,6 @@ let banana;
 let pineapple;
 let fruitTimer;
 let fruitDroppedArray = [];
-let fruitDeath = false;
 
 //sliced fruit images
 let appleBottomLeft;
@@ -84,6 +83,7 @@ class Fruit{ //all of the functions and variables for each single fruit
     this.time = 100;
     this.directionSliced;
     this.possibleSlice = false;
+    this.reachedtopY = false;
   }
 
   display(){
@@ -122,7 +122,8 @@ class Fruit{ //all of the functions and variables for each single fruit
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft" || this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
           this.fruitWidth += 25;
           image(bombExploding, 0, 0, this.fruitWidth, this.fruitWidth);
-          if (this.fruitWidth >= 1000){
+          console.log(this.fruitWidth);
+          if (this.fruitWidth >= 500){
             deathScreeen();
           }
         }
@@ -203,18 +204,19 @@ class Fruit{ //all of the functions and variables for each single fruit
       this.dy += 0.4; 
       this.dx -= 0.2;
     }
+    if (this.y <= height/2){
+      this.reachedtopY = true;
+    }
   }
 
   isDead(){
     //the fruit is off the screen and not sliced
-    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && //PUT SOMETHING HERE TO MAKE SURE THAT IT DOESNT JUST RECOGNIZE THE FRUIT AS SOON AS ITS MADE OFF SCREEN){
+    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true){ 
       //the fruit is off the screen and was not hit by the blade
-      fruitDeath = true;
+      fruitDroppedArray.push(1);
+      return true;
     }
-    // if (this.fruitDroppedArray.length === 3){
-    //   //too many fruit dropped before it was sliced, game over
-    //   deathScreeen();
-    // }
+    return false;
   }
 
   sliced(){
@@ -251,12 +253,11 @@ function draw() {
     fruitArray[i].sliced();
     fruitArray[i].gravity();
     fruitArray[i].display();
-    fruitArray[i].isDead();
 
     //remove if needed
-    // if (fruitArray[i].isDead()){
-    //   fruitArray.splice(i, 1);
-    // }
+    if (fruitArray[i].isDead()){
+      fruitArray.splice(i, 1);
+    }
   }
   deathScreeen();
 }
@@ -276,14 +277,10 @@ function startScreen(){
 }
 
 function deathScreeen(){
-  if (fruitDeath){
-    console.log(fruitDroppedArray);
-    fruitDroppedArray.push(1);
-    fruitDeath = false;
-  }
-  if (fruitDroppedArray.length === 4){
+  console.log(fruitDroppedArray);
+  if (fruitDroppedArray.length >= 3){
     //too many fruit dropped before it was sliced, game over
     noLoop();
-    background("white");
+    background("red");
   }
 }
