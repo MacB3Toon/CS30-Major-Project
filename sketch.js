@@ -2,7 +2,6 @@
 // Macayla Buckmaster
 // Date
 
-//fruit array drop thing not working its automatically seeing one fruit on the screen as three fruit deaths.
 //create a blade effect for the mouse
 //get fruit to appear in time with game settings
 //make bomb function
@@ -66,7 +65,7 @@ function setup() { //setting up the basics of the game
   createCanvas(windowWidth, windowHeight);
   fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
   imageMode(CENTER); 
-  fruitTimer = new Timer(3000);
+  fruitTimer = new Timer(1500);
   fruitTimer.start();
 }
 
@@ -211,12 +210,13 @@ class Fruit{ //all of the functions and variables for each single fruit
 
   isDead(){
     //the fruit is off the screen and not sliced
-    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true){ 
+    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && (this.x > windowWidth || this.x < 0) && this.type !== "bomb"){ 
       //the fruit is off the screen and was not hit by the blade
       fruitDroppedArray.push(1);
       return true;
     }
     return false;
+
   }
 
   sliced(){
@@ -245,6 +245,10 @@ let fruitArray = [];
 
 function draw() {
   background("grey");
+  console.log(fruitDroppedArray);
+  if (fruitDroppedArray.length === 3){
+    deathScreeen();
+  }
   if (fruitTimer.expired()){
     spawnFruit();
     fruitTimer.start();
@@ -259,7 +263,6 @@ function draw() {
       fruitArray.splice(i, 1);
     }
   }
-  deathScreeen();
 }
 
 function spawnFruit(){
@@ -277,10 +280,8 @@ function startScreen(){
 }
 
 function deathScreeen(){
-  console.log(fruitDroppedArray);
-  if (fruitDroppedArray.length >= 3){
-    //too many fruit dropped before it was sliced, game over
-    noLoop();
-    background("red");
-  }
+  //too many fruit dropped before it was sliced, game over
+  //or bomb was hit
+  noLoop();
+  background("red");
 }
