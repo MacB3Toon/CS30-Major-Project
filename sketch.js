@@ -22,6 +22,9 @@ let banana;
 let pineapple;
 let fruitTimer;
 let fruitDroppedArray = [];
+let newgameScreen;
+let gameoverScreen;
+let woodbackground;
 
 //sliced fruit images
 let appleBottomLeft;
@@ -59,6 +62,9 @@ function preload(){ //preloads images for fruit
   pineappleBottomLeft = loadImage("slicedfruit/pineapplecutinhalf-bottomleft.png");
   watermelonBottomRight = loadImage("slicedfruit/watermeloncutinhalf-bottomright.png");
   watermelonBottomLeft = loadImage("slicedfruit/watermeloncutinhalf-bottomleft.png");
+  newgameScreen = loadImage("woodbackhomescreen.jpg");
+  gameoverScreen = loadImage("woodbackgameover.jpg");
+  woodbackground = loadImage("woodbackgroundsimple.jpg");
 }
 
 function setup() { //setting up the basics of the game
@@ -244,8 +250,7 @@ class Fruit{ //all of the functions and variables for each single fruit
 let fruitArray = [];
 
 function draw() {
-  background("grey");
-  console.log(fruitDroppedArray);
+  image(woodbackground, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
   if (fruitDroppedArray.length === 3){
     deathScreeen();
   }
@@ -283,5 +288,5 @@ function deathScreeen(){
   //too many fruit dropped before it was sliced, game over
   //or bomb was hit
   noLoop();
-  background("red");
+  image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
 }
