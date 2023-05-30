@@ -4,13 +4,11 @@
 
 //create a blade effect for the mouse
 //get fruit to appear in time with game settings
-//make bomb function
-//create deathscreen 
-//create background
 //create fruit splatter
-//create pause button
-//create home screen and death screens
 //add sounds
+
+//how to make the timer speed up gradually
+//when the game ends there's still a fruit on the screen how to make that go away
 
 let fruits;
 let watermelon;
@@ -251,6 +249,7 @@ let fruitArray = [];
 
 function draw() {
   image(woodbackground, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+  console.log(fruitArray);
   if (fruitDroppedArray.length === 3){
     deathScreeen();
   }
