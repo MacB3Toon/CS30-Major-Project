@@ -9,6 +9,7 @@
 
 //how to make the timer speed up gradually
 //when the game ends there's still a fruit on the screen how to make that go away
+//fruit isn't being deleted once it's dead
 
 let fruits;
 let watermelon;
