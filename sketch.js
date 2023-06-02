@@ -8,9 +8,15 @@
 //add sounds
 
 //how to make the timer speed up gradually
+//how to change the opacity of an image for fruit splatter
 //when the game ends there's still a fruit on the screen how to make that go away
 //fruit isn't being deleted once it's dead
 
+//global variables
+let fruitDroppedArray = [];
+let possibleSlice = false;
+
+//images
 let fruits;
 let watermelon;
 let bomb; 
@@ -20,10 +26,15 @@ let mango;
 let banana; 
 let pineapple;
 let fruitTimer;
-let fruitDroppedArray = [];
 let newgameScreen;
 let gameoverScreen;
 let woodbackground;
+let applesplatter;
+let bananasplatter;
+let mangosplatter;
+let orangesplatter;
+let pineapplesplatter;
+let watermelonsplatter;
 
 //sliced fruit images
 let appleBottomLeft;
@@ -40,7 +51,21 @@ let pineappleBottomLeft;
 let watermelonBottomRight;
 let watermelonBottomLeft;
 
-function preload(){ //preloads images for fruit
+//sounds
+let bombExplosion;
+let openingMusic;
+let playingMusic;
+let slashSound;
+
+function preload(){ //preloads images and sounds
+  //sounds
+  soundFormats("wav", "ogg");
+  bombExplosion = loadSound("sounds/bombexplosion.wav");
+  openingMusic = loadSound("sounds/openmusic.wav");
+  playingMusic = loadSound("sounds/playingmusic.ogg");
+  slashSound = loadSound("sounds/slashsound.wav");
+
+  //regular things to slice 
   watermelon = loadImage("wholefruit/watermelon.png");
   bomb = loadImage("wholefruit/bomb.png");
   orange = loadImage("wholefruit/orange.png");
@@ -48,6 +73,8 @@ function preload(){ //preloads images for fruit
   mango = loadImage("wholefruit/mago.png");
   banana = loadImage("wholefruit/banana.png");
   pineapple = loadImage("wholefruit/pineapple.png");
+
+  //sliced fruit
   appleBottomLeft = loadImage("slicedfruit/applecutinhalf-bottomleft.png");
   appleBottomRight = loadImage("slicedfruit/applecutinhalf-bottomright.png");
   bananaBottomLeft = loadImage("slicedfruit/bananacutinhalf-bottomleft.png");
@@ -61,9 +88,17 @@ function preload(){ //preloads images for fruit
   pineappleBottomLeft = loadImage("slicedfruit/pineapplecutinhalf-bottomleft.png");
   watermelonBottomRight = loadImage("slicedfruit/watermeloncutinhalf-bottomright.png");
   watermelonBottomLeft = loadImage("slicedfruit/watermeloncutinhalf-bottomleft.png");
+
+  //extra game images
   newgameScreen = loadImage("woodbackhomescreen.jpg");
   gameoverScreen = loadImage("woodbackgameover.jpg");
   woodbackground = loadImage("woodbackgroundsimple.jpg");
+  applesplatter = loadImage("fruitsplatter/applesplatter.jpg");
+  bananasplatter = loadImage("fruitsplatter/bananasplatter.jpg");
+  mangosplatter = loadImage("fruitsplatter/mangosplatter.jpg");
+  orangesplatter = loadImage("fruitsplatter/orangesplatter.jpg");
+  pineapplesplatter = loadImage("fruitsplatter/pineapplesplatter.jpg");
+  watermelonsplatter = loadImage("fruitsplatter/watermelonsplatter.jpg");
 }
 
 function setup() { //setting up the basics of the game
@@ -86,17 +121,19 @@ class Fruit{ //all of the functions and variables for each single fruit
     this.startX = this.x;
     this.time = 100;
     this.directionSliced;
-    this.possibleSlice = false;
     this.reachedtopY = false;
+    this.sliceX;
+    this.sliceY;
+    this.opacity;
   }
 
   display(){
-    //check what fruit, if sliced then display it
+    //check what fruit, if sliced then display it, change if sliced
     push();
     translate(this.x, this.y);
     rotate(this.time); 
     if (this.type === "watermelon"){
-      if (this.possibleSlice){
+      if (possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(watermelonBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 100);
         }
@@ -109,7 +146,7 @@ class Fruit{ //all of the functions and variables for each single fruit
       }
     }
     else if (this.type === "orange"){
-      if (this.possibleSlice){
+      if (possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(orangeBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
         }
@@ -122,10 +159,11 @@ class Fruit{ //all of the functions and variables for each single fruit
       }
     }
     else if (this.type === "bomb"){
-      if (this.possibleSlice){
+      if (possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft" || this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
           this.fruitWidth += 25;
           image(bombExploding, 0, 0, this.fruitWidth, this.fruitWidth);
+          bombExplosion.play();
           console.log(this.fruitWidth);
           if (this.fruitWidth >= 500){
             deathScreeen();
@@ -137,7 +175,7 @@ class Fruit{ //all of the functions and variables for each single fruit
       }
     }
     else if (this.type === "apple"){
-      if (this.possibleSlice){
+      if (possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(appleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
         }
@@ -150,7 +188,7 @@ class Fruit{ //all of the functions and variables for each single fruit
       }
     }
     else if (this.type === "mango"){
-      if (this.possibleSlice){
+      if (possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(mangoBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
         }
@@ -163,7 +201,7 @@ class Fruit{ //all of the functions and variables for each single fruit
       }
     }
     else if (this.type === "banana"){
-      if (this.possibleSlice){
+      if (possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(bananaBottomRight, 0, 0, this.fruitWidth + 100, this.fruitWidth);
         }
@@ -176,7 +214,7 @@ class Fruit{ //all of the functions and variables for each single fruit
       }
     }
     else if (this.type === "pineapple"){
-      if (this.possibleSlice){
+      if (possibleSlice){
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(pineappleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 200);
         }
@@ -215,7 +253,7 @@ class Fruit{ //all of the functions and variables for each single fruit
 
   isDead(){
     //the fruit is off the screen and not sliced
-    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && (this.x > windowWidth || this.x < 0) && this.type !== "bomb"){ 
+    if (possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && (this.x > windowWidth || this.x < 0) && this.type !== "bomb"){ 
       //the fruit is off the screen and was not hit by the blade
       fruitDroppedArray.push(1);
       return true;
@@ -228,19 +266,31 @@ class Fruit{ //all of the functions and variables for each single fruit
     if (mouseIsPressed === true){
       if ((mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2) && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from bottom right corner 
         this.directionSliced = "bottomRight";
-        this.possibleSlice = true;
+        possibleSlice = true;
+        slashSound.play();
+        this.sliceX = this.x;
+        this.sliceY = this.y;
       }
       if ((mouseX < this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2)  && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from bottom left corner 
         this.directionSliced = "bottomLeft";
-        this.possibleSlice = true;
+        possibleSlice = true;
+        slashSound.play();
+        this.sliceX = this.x;
+        this.sliceY = this.y;
       }
       if ((mouseX > this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2) && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from top right corner 
         this.directionSliced = "topRight";
-        this.possibleSlice = true;
+        possibleSlice = true;
+        slashSound.play();
+        this.sliceX = this.x;
+        this.sliceY = this.y;
       }
       if ((mouseX < this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2)  && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from top right corner 
         this.directionSliced = "topLeft";
-        this.possibleSlice = true;
+        possibleSlice = true;
+        slashSound.play();
+        this.sliceX = this.x;
+        this.sliceY = this.y;
       }
     }
   }
@@ -257,6 +307,9 @@ function draw() {
   if (fruitTimer.expired()){
     spawnFruit();
     fruitTimer.start();
+  }
+  if (possibleSlice){
+    slashSound.play();
   }
   for (let i = fruitArray.length - 1; i >= 0; i--){
     fruitArray[i].sliced();
