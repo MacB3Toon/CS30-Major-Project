@@ -2,12 +2,11 @@
 // Macayla Buckmaster
 // Date
 
-//create a blade effect for the mouse
 //get fruit to appear in time with game settings
 //create fruit splatter
-//add sounds
 
 //how to make the timer speed up gradually
+//fruit is spinning incredibly fast
 //how to change the opacity of an image for fruit splatter
 //where to put slashSound.play(); so that it only plays once per fruit when it's cut
 //when the game ends there's still a fruit on the screen how to make that go away
