@@ -4,6 +4,10 @@
 
 //get fruit to appear in time with game settings
 //create fruit splatter
+//add start screeen
+//add fruit to screeens
+//add x's to playing screen
+//add scoring system
 
 //create a secondary array for the splatter where it can be displayed and updated and deleted from an array once its opacity is less than 0.
 //4 blade isn't showing on screen, mouse dragged is executing but not showing up.
@@ -14,8 +18,6 @@ let fruitSliced = false;
 let playingGame = false;
 let timerforFruit = 1500;
 let fruitType;
-let slashY;
-let slashX;
 let opacity = 255;
 let bladeWidth = 100;
 let bladeHeight = 300;
@@ -99,12 +101,12 @@ function preload(){ //preloads images and sounds
   gameoverScreen = loadImage("woodbackgameover.jpg");
   woodbackground = loadImage("woodbackgroundsimple.jpg");
   blade = loadImage("slashes/classicSlashes/Classic_20.png");
-  applesplatter = loadImage("fruitsplatter/applesplatter.jpg");
-  bananasplatter = loadImage("fruitsplatter/bananasplatter.jpg");
-  mangosplatter = loadImage("fruitsplatter/mangosplatter.jpg");
-  orangesplatter = loadImage("fruitsplatter/orangesplatter.jpg");
-  pineapplesplatter = loadImage("fruitsplatter/pineapplesplatter.jpg");
-  watermelonsplatter = loadImage("fruitsplatter/watermelonsplatter.jpg");
+  applesplatter = loadImage("fruitsplatter/applesplatter.png");
+  bananasplatter = loadImage("fruitsplatter/bananasplatter.png");
+  mangosplatter = loadImage("fruitsplatter/mangosplatter.png");
+  orangesplatter = loadImage("fruitsplatter/orangesplatter.png");
+  pineapplesplatter = loadImage("fruitsplatter/pineapplesplatter.png");
+  watermelonsplatter = loadImage("fruitsplatter/watermelonsplatter.png");
 }
 
 function setup() { //setting up the basics of the game
@@ -281,21 +283,29 @@ class Fruit{
         this.directionSliced = "bottomRight";
         this.possibleSlice = true;
         fruitSliced = true;
+        let theSplatter = new Splatter(this.x, this.y);
+        splatterArray.push(theSplatter);
       }
       if ((mouseX < this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2)  && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from bottom left corner 
         this.directionSliced = "bottomLeft";
         this.possibleSlice = true;
         fruitSliced = true;
+        let theSplatter = new Splatter(this.x, this.y);
+        splatterArray.push(theSplatter);
       }
       if ((mouseX > this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2) && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from top right corner 
         this.directionSliced = "topRight";
         this.possibleSlice = true;
         fruitSliced = true;
+        let theSplatter = new Splatter(this.x, this.y);
+        splatterArray.push(theSplatter);
       }
       if ((mouseX < this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2)  && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from top right corner 
         this.directionSliced = "topLeft";
         this.possibleSlice = true;
         fruitSliced = true;
+        let theSplatter = new Splatter(this.x, this.y);
+        splatterArray.push(theSplatter);
       }
     }
   }
@@ -303,15 +313,15 @@ class Fruit{
 
 class Splatter{
   //all the functions for each individual fruit splatter
-  constructor(){
-    this.splatterY = slashX;
-    this.splatterX = slashY;
+  constructor(x, y){
+    this.splatterY = x;
+    this.splatterX = y;
     this.opacity = 255;
     this.splatterWidth = 250;
     this.splatterHeight = 250;
   }
 
-  display(){
+  splatterFruit(){
     tint(255, this.opacity);
     if(fruitType === "apple"){
       image(applesplatter, this.splatterX, this.splatterY, this.splatterWidth, this.splatterHeight);
@@ -336,6 +346,13 @@ class Splatter{
   update(){
     this.opacity -= 1;
     this.splatterY += 0.2;
+  }
+
+  isOpaque(){
+    if(this.opacity <= 0){
+      return true;
+    }
+    return false;
   }
 }
 
@@ -366,7 +383,14 @@ function draw() {
       fruitArray.splice(i, 1);
     }
   }
-  console.log(fruitArray);
+  for (let s = splatterArray.length; s >= 0; s--){
+    splatterArray[s].splatterFruit();
+    splatterArray[s].update();
+
+    if(splatterArray[s].isOpaque()){
+      splatterArray.splice(s, 1);
+    }
+  }
 }
 
 function spawnFruit(){
@@ -374,14 +398,19 @@ function spawnFruit(){
   fruitArray.push(theFruit);
 }
 
-// function mouseDragged(){
-//   //display blade here
-//   imageMode(CORNER); 
-//   image(blade, mouseX, mouseY, bladeWidth, bladeHeight);
-// }
+function mouseDragged(){
+  //display blade here
+  imageMode(CORNER); 
+  image(blade, mouseX, mouseY, bladeWidth, bladeHeight);
+  console.log("hasgfosdhgosd");
+}
 
 function startScreen(){
   //start screen
+  if(playingGame === false){
+    image(newgameScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+    fruitInCircles;
+  }
 }
 
 function deathScreeen(){
@@ -390,32 +419,9 @@ function deathScreeen(){
   noLoop();
   imageMode(CENTER);
   image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+  fruitInCircles();
 }
 
-function fruitSplatter(slashX, slashY){
-  if (fruitSliced){
-    tint(255, opacity);
-    if(fruitType === "apple"){
-      image(applesplatter, slashX, slashY, 100, 100);
-    }
-    if(fruitType === "banana"){
-      image(bananasplatter, slashX, slashY, 100, 100);
-    }
-    if(fruitType === "mango"){
-      image(mangosplatter, slashX, slashY, 100, 100);
-    }
-    if(fruitType === "orange"){
-      image(orangesplatter, slashX, slashY, 100, 100);
-    }
-    if(fruitType === "pineapple"){
-      image(pineapplesplatter, slashX, slashY, 100, 100);
-    }
-    if(fruitType === "watermelon"){
-      image(watermelonsplatter, slashX, slashY, 100, 100);
-    }
-    if(opacity > 0){
-      opacity -= 1;
-    }
-  }
-  opacity = 255;
+function fruitInCircles(){
+  //rgb of the color of the circles is (33, 27, 31)
 }
