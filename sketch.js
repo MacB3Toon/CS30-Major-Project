@@ -8,6 +8,8 @@
 //add scoring system
 
 //4 blade isn't showing on screen, mouse dragged is executing but not showing up.
+//MUSIC ONLY PLAYS WHEN CONSOLE LOG BY IT
+//images in fruit in circles keep changingggggg
 
 //global variables
 let fruitDroppedArray = [];
@@ -399,7 +401,6 @@ function spawnSplatter(x, y){//NEED TO CALL THIS SOMEWHERE BUT STILL GET THE VAR
 
 function gamingScreeen(){
   image(woodbackground, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-  playingMusic.play();
   if(playingMusic.isPlaying() === false){
     playingMusic.play();
   }
@@ -444,11 +445,11 @@ function startScreen(){
   //start screen
   noTint();
   image(newgameScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-  openingMusic.play();
-  // if(openingMusic.isPlaying() === false){
-  //   openingMusic.play();
-  // }
-  fruitInCircles;
+  if(openingMusic.isPlaying() === false){
+    openingMusic.play();
+  }
+  //console.log("playyyingggggg");
+  fruitInCircles();
 }
 
 function deathScreeen(){
@@ -458,7 +459,6 @@ function deathScreeen(){
   imageMode(CENTER);
   noTint();
   image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-  playingMusic.play();
   if(playingMusic.isPlaying() === false){
     playingMusic.play();
   }
@@ -468,7 +468,6 @@ function deathScreeen(){
 function gameOptionsScreeen(){
   volumeSlider = createSlider(0, 100, 75, 5);
   volumeSlider.position(windowWidth/4, windowHeight/2);
-  openingMusic.play();
   if(openingMusic.isPlaying() === false){
     openingMusic.play();
   }
@@ -477,11 +476,10 @@ function gameOptionsScreeen(){
 
 function fruitInCircles(){
   //fruit in circle closer to middle
-  console.log("FRUITINCIRLES");
   imageMode(CENTER);
   rotate(10);
   if(startingScreen || gameOver){
-    circleFruit = random["watermelon", "orange", "apple", "mango", "banana", "pineapple"];
+    circleFruit = random(fruits);
     if(circleFruit === "watermelon"){
       image(watermelon, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
     }
@@ -500,11 +498,13 @@ function fruitInCircles(){
     if(circleFruit === "pineapple"){
       image(pineapple, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
     }
-    console.log("MIDDLECIRCLE");
+    if(circleFruit === "bomb"){
+      circleFruit = random(fruits);
+    }
   }
 
   //fruit closer to edge
-  circleFruit = random["watermelon", "orange", "apple", "mango", "banana", "pineapple"];
+  circleFruit = random(fruits);
   if(circleFruit === "watermelon"){
     image(watermelon, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
   }
@@ -523,7 +523,9 @@ function fruitInCircles(){
   if(circleFruit === "pineapple"){
     image(pineapple, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
   }
-  console.log("EDGECIRCLE");
+  if(circleFruit === "bomb"){
+    circleFruit = random(fruits);
+  }
 
   if(mouseIsPressed){
     //fruit on starting screen
