@@ -4,12 +4,9 @@
 
 //get fruit to appear in time with game settings
 //create fruit splatter
-//add start screeen
-//add fruit to screeens
 //add x's to playing screen
 //add scoring system
 
-//create a secondary array for the splatter where it can be displayed and updated and deleted from an array once its opacity is less than 0.
 //4 blade isn't showing on screen, mouse dragged is executing but not showing up.
 
 //global variables
@@ -21,9 +18,14 @@ let fruitType;
 let opacity = 255;
 let bladeWidth = 100;
 let bladeHeight = 300;
+let gameOver = false;
+let startingScreen = true;
+let circleFruit;
+let volumeSlider;
+let otherOptionsScreen = false;
 
 //images
-let fruits;
+let fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
 let watermelon;
 let bomb; 
 let orange;
@@ -35,6 +37,7 @@ let fruitTimer;
 let newgameScreen;
 let gameoverScreen;
 let woodbackground;
+let optionsscreen;
 let blade;
 let applesplatter;
 let bananasplatter;
@@ -100,6 +103,7 @@ function preload(){ //preloads images and sounds
   newgameScreen = loadImage("woodbackhomescreen.jpg");
   gameoverScreen = loadImage("woodbackgameover.jpg");
   woodbackground = loadImage("woodbackgroundsimple.jpg");
+  optionsscreen = loadImage("otheroptionsScreen.jpg");
   blade = loadImage("slashes/classicSlashes/Classic_20.png");
   applesplatter = loadImage("fruitsplatter/applesplatter.png");
   bananasplatter = loadImage("fruitsplatter/bananasplatter.png");
@@ -111,7 +115,6 @@ function preload(){ //preloads images and sounds
 
 function setup() { //setting up the basics of the game
   createCanvas(windowWidth, windowHeight);
-  fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
   imageMode(CENTER); 
   angleMode(DEGREES);
   fruitTimer = new Timer(timerforFruit);
@@ -278,7 +281,7 @@ class Fruit{
   }
 
   sliced(){
-    if (mouseIsPressed === true){
+    if (mouseIsPressed){
       if ((mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2) && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from bottom right corner 
         this.directionSliced = "bottomRight";
         this.possibleSlice = true;
@@ -361,18 +364,62 @@ let splatterArray = [];
 
 function draw() {
   imageMode(CENTER);
+
+  //the screens
+  if(startingScreen){
+    startScreen();
+  }
+
+  if(otherOptionsScreen){
+    gameOptionsScreeen();
+  }
+
+  if(playingGame){
+    gamingScreeen();
+  }
+}
+
+function spawnFruit(){
+  let theFruit = new Fruit();
+  fruitArray.push(theFruit);
+}
+
+function spawnSplatter(x, y){//NEED TO CALL THIS SOMEWHERE BUT STILL GET THE VARIABLES FROM INSIDE FRUIT CLASS
+  let theSplatter = new Splatter(x, y);
+  splatterArray.push(theSplatter);
+}
+
+// function mouseDragged(){
+//   //display blade here
+//   imageMode(CORNER); 
+//   noTint();
+//   image(blade, mouseX, mouseY, bladeWidth, bladeHeight);
+//   console.log("hasgfosdhgosd");
+// }
+
+function gamingScreeen(){
   image(woodbackground, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-  if (fruitDroppedArray.length === 3){
+  playingMusic.play();
+  if(playingMusic.isPlaying() === false){
+    playingMusic.play();
+  }
+  //too many fruit dropped
+  if (fruitDroppedArray.length >= 3){
     deathScreeen();
   }
+
+  //new fruit appears
   if (fruitTimer.expired()){
     spawnFruit();
     fruitTimer.start();
   }
+
+  //fruit was sliced
   if(fruitSliced){
     slashSound.play();
     fruitSliced = false;
   }
+
   for (let i = fruitArray.length - 1; i >= 0; i--){
     fruitArray[i].sliced();
     fruitArray[i].gravity();
@@ -383,34 +430,25 @@ function draw() {
       fruitArray.splice(i, 1);
     }
   }
-  for (let s = splatterArray.length; s >= 0; s--){
-    splatterArray[s].splatterFruit();
-    splatterArray[s].update();
+  // for (let s = splatterArray.length; s >= 0; s--){
+  //   splatterArray[s].splatterFruit();
+  //   splatterArray[s].update();
 
-    if(splatterArray[s].isOpaque()){
-      splatterArray.splice(s, 1);
-    }
-  }
-}
-
-function spawnFruit(){
-  let theFruit = new Fruit();
-  fruitArray.push(theFruit);
-}
-
-function mouseDragged(){
-  //display blade here
-  imageMode(CORNER); 
-  image(blade, mouseX, mouseY, bladeWidth, bladeHeight);
-  console.log("hasgfosdhgosd");
+  //   if(splatterArray[s].isOpaque()){
+  //     splatterArray.splice(s, 1);
+  //   }
+  // }
 }
 
 function startScreen(){
   //start screen
-  if(playingGame === false){
-    image(newgameScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-    fruitInCircles;
-  }
+  noTint();
+  image(newgameScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+  openingMusic.play();
+  // if(openingMusic.isPlaying() === false){
+  //   openingMusic.play();
+  // }
+  fruitInCircles;
 }
 
 function deathScreeen(){
@@ -418,10 +456,112 @@ function deathScreeen(){
   //or bomb was hit
   noLoop();
   imageMode(CENTER);
+  noTint();
   image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+  playingMusic.play();
+  if(playingMusic.isPlaying() === false){
+    playingMusic.play();
+  }
+  fruitInCircles();
+}
+
+function gameOptionsScreeen(){
+  volumeSlider = createSlider(0, 100, 75, 5);
+  volumeSlider.position(windowWidth/4, windowHeight/2);
+  openingMusic.play();
+  if(openingMusic.isPlaying() === false){
+    openingMusic.play();
+  }
   fruitInCircles();
 }
 
 function fruitInCircles(){
-  //rgb of the color of the circles is (33, 27, 31)
+  //fruit in circle closer to middle
+  console.log("FRUITINCIRLES");
+  imageMode(CENTER);
+  rotate(10);
+  if(startingScreen || gameOver){
+    circleFruit = random["watermelon", "orange", "apple", "mango", "banana", "pineapple"];
+    if(circleFruit === "watermelon"){
+      image(watermelon, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+    }
+    if(circleFruit === "orange"){
+      image(orange, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+    }
+    if(circleFruit === "apple"){
+      image(apple, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+    }
+    if(circleFruit === "mango"){
+      image(mango, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+    }
+    if(circleFruit === "banana"){
+      image(banana, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+    }
+    if(circleFruit === "pineapple"){
+      image(pineapple, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+    }
+    console.log("MIDDLECIRCLE");
+  }
+
+  //fruit closer to edge
+  circleFruit = random["watermelon", "orange", "apple", "mango", "banana", "pineapple"];
+  if(circleFruit === "watermelon"){
+    image(watermelon, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  }
+  if(circleFruit === "orange"){
+    image(orange, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  }
+  if(circleFruit === "apple"){
+    image(apple, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  }
+  if(circleFruit === "mango"){
+    image(mango, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  }
+  if(circleFruit === "banana"){
+    image(banana, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  }
+  if(circleFruit === "pineapple"){
+    image(pineapple, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  }
+  console.log("EDGECIRCLE");
+
+  if(mouseIsPressed){
+    //fruit on starting screen
+    //new game has been selected
+    if(mouseX > width/20 && mouseY > height/17 && startingScreen){
+      playingGame === true;
+      startingScreen = false;
+      otherOptionsScreen = false;
+    }
+
+    //other options have been selected
+    if(mouseX > width/12.8 && mouseY > height/14.05 && startingScreen){
+      otherOptionsScreen = true;
+      startingScreen = false;
+      playingGame = false;
+    }
+
+    //fruit on game over screen
+    //retry game has been selected
+    if(mouseX > width/20 && mouseY > height/17 && gameOver){
+      playingGame === true;
+      startingScreen = false;
+      otherOptionsScreen = false;
+    }
+
+    //home screen has been selected
+    if(mouseX > width/12.8 && mouseY > height/14.05 && gameOver){
+      otherOptionsScreen = false;
+      playingGame = false;
+      startingScreen = true;
+    }
+
+    //fruit on other options screen
+    //back to home screen has been selected
+    if(mouseX > width/12.8 && mouseY > height/14.05 && gameOver){
+      otherOptionsScreen = false;
+      playingGame = false;
+      startingScreen = true;
+    }
+  }
 }
