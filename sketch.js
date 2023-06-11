@@ -9,7 +9,6 @@
 
 //4 blade isn't showing on screen, mouse dragged is executing but not showing up.
 //MUSIC ONLY PLAYS WHEN CONSOLE LOG BY IT
-//images in fruit in circles keep changingggggg
 
 //global variables
 let fruitDroppedArray = [];
@@ -22,7 +21,9 @@ let bladeWidth = 100;
 let bladeHeight = 300;
 let gameOver = false;
 let startingScreen = true;
+let circleFruits = ["watermelon", "orange", "apple", "mango"];
 let circleFruit;
+let edgecircleFruit;
 let volumeSlider;
 let otherOptionsScreen = false;
 
@@ -117,6 +118,10 @@ function preload(){ //preloads images and sounds
 
 function setup() { //setting up the basics of the game
   createCanvas(windowWidth, windowHeight);
+
+  circleFruit = random(circleFruits);
+  edgecircleFruit = random(circleFruits);
+
   imageMode(CENTER); 
   angleMode(DEGREES);
   fruitTimer = new Timer(timerforFruit);
@@ -477,67 +482,47 @@ function gameOptionsScreeen(){
 function fruitInCircles(){
   //fruit in circle closer to middle
   imageMode(CENTER);
-  rotate(10);
   if(startingScreen || gameOver){
-    circleFruit = random(fruits);
     if(circleFruit === "watermelon"){
-      image(watermelon, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+      image(watermelon, (windowWidth/20)* 10, (windowHeight/16.5) * 10, width/8, height/8);
     }
     if(circleFruit === "orange"){
-      image(orange, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+      image(orange, (windowWidth/20)* 10, (windowHeight/16.5) * 10, width/8, height/8);
     }
     if(circleFruit === "apple"){
-      image(apple, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
+      image(apple, (windowWidth/20)* 10, (windowHeight/16.5) * 10, width/8, height/8);
     }
     if(circleFruit === "mango"){
-      image(mango, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
-    }
-    if(circleFruit === "banana"){
-      image(banana, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
-    }
-    if(circleFruit === "pineapple"){
-      image(pineapple, (windowWidth/20.3)* 10, (windowHeight/16.8) * 10, width/20, height/17);
-    }
-    if(circleFruit === "bomb"){
-      circleFruit = random(fruits);
+      image(mango, (windowWidth/20)* 10, (windowHeight/16.5) * 10, width/8, height/8);
     }
   }
 
   //fruit closer to edge
-  circleFruit = random(fruits);
-  if(circleFruit === "watermelon"){
-    image(watermelon, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  if(edgecircleFruit === "watermelon"){
+    image(watermelon, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, width/8, height/8);
   }
-  if(circleFruit === "orange"){
-    image(orange, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  if(edgecircleFruit === "orange"){
+    image(orange, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, width/8, height/8);
   }
-  if(circleFruit === "apple"){
-    image(apple, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  if(edgecircleFruit === "apple"){
+    image(apple, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, width/8, height/8);
   }
-  if(circleFruit === "mango"){
-    image(mango, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
+  if(edgecircleFruit === "mango"){
+    image(mango, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, width/8, height/8);
   }
-  if(circleFruit === "banana"){
-    image(banana, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
-  }
-  if(circleFruit === "pineapple"){
-    image(pineapple, (windowWidth/12.8)* 10, (windowHeight/14.05) * 10, width/12.8, height/14.05);
-  }
-  if(circleFruit === "bomb"){
-    circleFruit = random(fruits);
-  }
+
 
   if(mouseIsPressed){
     //fruit on starting screen
     //new game has been selected
-    if(mouseX > width/20 && mouseY > height/17 && startingScreen){
+    if((mouseX < windowWidth/20 * 10 + windowWidth/40) && (mouseX > windowWidth/20 * 10 - windowWidth/40) && (mouseX < windowHeight/16.5 * 10 + windowHeight/33) && (mouseY > windowHeight/16.5 * 10 - windowHeight/33) && startingScreen){
       playingGame === true;
       startingScreen = false;
       otherOptionsScreen = false;
     }
 
     //other options have been selected
-    if(mouseX > width/12.8 && mouseY > height/14.05 && startingScreen){
+    if((mouseX < windowWidth/12.8 * 10 + windowWidth/25.6)  && (mouseX > windowWidth/12.8 * 10 - windowWidth/25.6) && (mouseY  < windowHeight/13.8 * 10 + windowHeight/17.6) && (mouseY  < windowHeight/13.8 * 10 - windowHeight/17.6) && startingScreen){
       otherOptionsScreen = true;
       startingScreen = false;
       playingGame = false;
@@ -545,14 +530,14 @@ function fruitInCircles(){
 
     //fruit on game over screen
     //retry game has been selected
-    if(mouseX > width/20 && mouseY > height/17 && gameOver){
+    if((mouseX < windowWidth/20 * 10 + windowWidth/40) && (mouseX > windowWidth/20 * 10 - windowWidth/40) && (mouseX < windowHeight/16.5 * 10 + windowHeight/33) && (mouseY > windowHeight/16.5 * 10 - windowHeight/33) && gameOver){
       playingGame === true;
       startingScreen = false;
       otherOptionsScreen = false;
     }
 
     //home screen has been selected
-    if(mouseX > width/12.8 && mouseY > height/14.05 && gameOver){
+    if((mouseX < windowWidth/12.8 * 10 + windowWidth/25.6)  && (mouseX > windowWidth/12.8 * 10 - windowWidth/25.6) && (mouseY  < windowHeight/13.8 * 10 + windowHeight/17.6) && (mouseY  < windowHeight/13.8 * 10 - windowHeight/17.6) && gameOver){
       otherOptionsScreen = false;
       playingGame = false;
       startingScreen = true;
@@ -560,7 +545,7 @@ function fruitInCircles(){
 
     //fruit on other options screen
     //back to home screen has been selected
-    if(mouseX > width/12.8 && mouseY > height/14.05 && gameOver){
+    if((mouseX < windowWidth/12.8 * 10 + windowWidth/25.6)  && (mouseX > windowWidth/12.8 * 10 - windowWidth/25.6) && (mouseY  < windowHeight/13.8 * 10 + windowHeight/17.6) && (mouseY  < windowHeight/13.8 * 10 - windowHeight/17.6) && gameOver){
       otherOptionsScreen = false;
       playingGame = false;
       startingScreen = true;
