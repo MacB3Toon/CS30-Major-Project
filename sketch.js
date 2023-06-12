@@ -8,7 +8,6 @@
 //add scoring system
 
 //4 blade isn't showing on screen, mouse dragged is executing but not showing up.
-//MUSIC ONLY PLAYS WHEN CONSOLE LOG BY IT
 
 //global variables
 let fruitDroppedArray = [];
@@ -406,8 +405,10 @@ function spawnSplatter(x, y){//NEED TO CALL THIS SOMEWHERE BUT STILL GET THE VAR
 
 function gamingScreeen(){
   image(woodbackground, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+  openingMusic.pause();
   if(playingMusic.isPlaying() === false){
     playingMusic.play();
+    playingMusic.setLoop(true);
   }
   //too many fruit dropped
   if (fruitDroppedArray.length >= 3){
@@ -450,10 +451,8 @@ function startScreen(){
   //start screen
   noTint();
   image(newgameScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-  if(openingMusic.isPlaying() === false){
-    openingMusic.play();
-  }
-  //console.log("playyyingggggg");
+  playingMusic.setLoop(false);
+  openingMusic.setLoop(false); //STOP NOT FALSE
   fruitInCircles();
 }
 
@@ -464,8 +463,10 @@ function deathScreeen(){
   imageMode(CENTER);
   noTint();
   image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-  if(playingMusic.isPlaying() === false){
-    playingMusic.play();
+  playingMusic.pause();
+  if(!openingMusic.isPlaying()){
+    openingMusic.play();
+    openingMusic.setLoop(true);
   }
   fruitInCircles();
 }
@@ -473,9 +474,6 @@ function deathScreeen(){
 function gameOptionsScreeen(){
   volumeSlider = createSlider(0, 100, 75, 5);
   volumeSlider.position(windowWidth/4, windowHeight/2);
-  if(openingMusic.isPlaying() === false){
-    openingMusic.play();
-  }
   fruitInCircles();
 }
 
@@ -484,45 +482,51 @@ function fruitInCircles(){
   imageMode(CENTER);
   if(startingScreen || gameOver){
     if(circleFruit === "watermelon"){
-      image(watermelon, (windowWidth/20)* 10, (windowHeight/16.5) * 10, width/8, height/8);
+      image(watermelon, (windowWidth/20)* 10, (windowHeight/16.5) * 10, windowHeight/8, windowHeight/8);
     }
     if(circleFruit === "orange"){
-      image(orange, (windowWidth/20)* 10, (windowHeight/16.5) * 10, width/8, height/8);
+      image(orange, (windowWidth/20)* 10, (windowHeight/16.5) * 10, windowHeight/8, windowHeight/8);
     }
     if(circleFruit === "apple"){
-      image(apple, (windowWidth/20)* 10, (windowHeight/16.5) * 10, width/8, height/8);
+      image(apple, (windowWidth/20)* 10, (windowHeight/16.5) * 10, windowHeight/8, windowHeight/8);
     }
     if(circleFruit === "mango"){
-      image(mango, (windowWidth/20)* 10, (windowHeight/16.5) * 10, width/8, height/8);
+      image(mango, (windowWidth/20)* 10, (windowHeight/16.5) * 10, windowHeight/8, windowHeight/8);
     }
   }
 
   //fruit closer to edge
   if(edgecircleFruit === "watermelon"){
-    image(watermelon, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, width/8, height/8);
+    image(watermelon, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, windowHeight/8, windowHeight/8);
   }
   if(edgecircleFruit === "orange"){
-    image(orange, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, width/8, height/8);
+    image(orange, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, windowHeight/8, windowHeight/8);
   }
   if(edgecircleFruit === "apple"){
-    image(apple, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, width/8, height/8);
+    image(apple, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, windowHeight/8, windowHeight/8);
   }
   if(edgecircleFruit === "mango"){
-    image(mango, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, width/8, height/8);
+    image(mango, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, windowHeight/8, windowHeight/8);
   }
 
+  //for the new game one near centre
+  //dist(windowWidth/20 * 10, windowHeight/16.5 * 10, mouseX, mouseY) <  windowHeight/16
+  //(mouseX < windowWidth/20 * 10 + windowWidth/40) && (mouseX > windowWidth/20 * 10 - windowWidth/40) && (mouseX < windowHeight/16.5 * 10 + windowHeight/33) && (mouseY > windowHeight/16.5 * 10 - windowHeight/33) && startingScreen)
 
+  //for the one near the edge
+  //(dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16)
+  //(mouseX < windowWidth/12.8 * 10 + windowWidth/25.6)  && (mouseX > windowWidth/12.8 * 10 - windowWidth/25.6) && (mouseY  < windowHeight/13.8 * 10 + windowHeight/17.6) && (mouseY  < windowHeight/13.8 * 10 - windowHeight/17.6)
   if(mouseIsPressed){
     //fruit on starting screen
     //new game has been selected
-    if((mouseX < windowWidth/20 * 10 + windowWidth/40) && (mouseX > windowWidth/20 * 10 - windowWidth/40) && (mouseX < windowHeight/16.5 * 10 + windowHeight/33) && (mouseY > windowHeight/16.5 * 10 - windowHeight/33) && startingScreen){
-      playingGame === true;
+    if((dist(windowWidth/20 * 10, windowHeight/16.5 * 10, mouseX, mouseY) <  windowHeight/16) && startingScreen){
+      playingGame = true;
       startingScreen = false;
       otherOptionsScreen = false;
     }
 
     //other options have been selected
-    if((mouseX < windowWidth/12.8 * 10 + windowWidth/25.6)  && (mouseX > windowWidth/12.8 * 10 - windowWidth/25.6) && (mouseY  < windowHeight/13.8 * 10 + windowHeight/17.6) && (mouseY  < windowHeight/13.8 * 10 - windowHeight/17.6) && startingScreen){
+    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && startingScreen){
       otherOptionsScreen = true;
       startingScreen = false;
       playingGame = false;
@@ -530,14 +534,14 @@ function fruitInCircles(){
 
     //fruit on game over screen
     //retry game has been selected
-    if((mouseX < windowWidth/20 * 10 + windowWidth/40) && (mouseX > windowWidth/20 * 10 - windowWidth/40) && (mouseX < windowHeight/16.5 * 10 + windowHeight/33) && (mouseY > windowHeight/16.5 * 10 - windowHeight/33) && gameOver){
-      playingGame === true;
+    if((dist(windowWidth/20 * 10, windowHeight/16.5 * 10, mouseX, mouseY) <  windowHeight/16) && gameOver){
+      playingGame = true;
       startingScreen = false;
       otherOptionsScreen = false;
     }
 
     //home screen has been selected
-    if((mouseX < windowWidth/12.8 * 10 + windowWidth/25.6)  && (mouseX > windowWidth/12.8 * 10 - windowWidth/25.6) && (mouseY  < windowHeight/13.8 * 10 + windowHeight/17.6) && (mouseY  < windowHeight/13.8 * 10 - windowHeight/17.6) && gameOver){
+    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && gameOver){
       otherOptionsScreen = false;
       playingGame = false;
       startingScreen = true;
@@ -545,7 +549,7 @@ function fruitInCircles(){
 
     //fruit on other options screen
     //back to home screen has been selected
-    if((mouseX < windowWidth/12.8 * 10 + windowWidth/25.6)  && (mouseX > windowWidth/12.8 * 10 - windowWidth/25.6) && (mouseY  < windowHeight/13.8 * 10 + windowHeight/17.6) && (mouseY  < windowHeight/13.8 * 10 - windowHeight/17.6) && gameOver){
+    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && gameOver){
       otherOptionsScreen = false;
       playingGame = false;
       startingScreen = true;
