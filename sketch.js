@@ -1,14 +1,13 @@
 // Fruity ninja
 // Macayla Buckmaster
-// Date
+// Monday July 19th, 2023
 
-//1 other options doesn't change screens 
-//2 doesn't always detect when a fruit was dropped. 
-//2 fruit still on screen when deathscreen called from inside gamescreeen
-//3 options on game over screen don't work
 //4 blade doesn't show up, almost like the draw loop is moving too quickly for it to appear because the function works with console log
 //5 create fruit splatter
 //6 add x's to the screen
+
+//figure out how to determine switch between game options and home screen better
+//showing blade??????????????????????????????
 
 //4 blade isn't showing on screen, mouse dragged is executing but not showing up.
 //starting screeen, both fruit work
@@ -24,6 +23,7 @@ let playingGame = false;
 let timerforFruit = 1500;
 let fruitType;
 let opacity = 255;
+let showingBlade = false;
 let bladeWidth = 100;
 let bladeHeight = 300;
 let gameOver = false;
@@ -33,6 +33,7 @@ let circleFruit;
 let edgecircleFruit;
 let volumeSlider;
 let otherOptionsScreen = false;
+let threeSecTimer;
 
 //images
 let fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
@@ -133,6 +134,7 @@ function setup() { //setting up the basics of the game
   angleMode(DEGREES);
   fruitTimer = new Timer(timerforFruit);
   fruitTimer.start();
+  threeSecTimer = new Timer(3000);
 }
 
 class Fruit{ 
@@ -143,7 +145,6 @@ class Fruit{
     this.type = random(fruits);
     fruitType = this.type;
     this.x = Math.floor(random(this.fruitWidth, windowWidth));
-    this.topHeight = Math.floor(windowHeight/2 - random(25, 300));
     this.dy = -22;
     this.dx = 1;
     this.possibleSlice = false;
@@ -303,7 +304,7 @@ class Fruit{
     }
 
     //changing a variable to be used to see if a fruit is dead or not
-    if (this.y <= height/2){
+    if (this.y <= windowHeight/2){
       this.reachedtopY = true;
     }
   }
@@ -312,15 +313,13 @@ class Fruit{
     //if the fruit is off the screen, and whether it is sliced or not
 
     //the fruit is off the screen and was not hit by the blade
-    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && this.type !== "bomb"){ 
+    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY && this.type !== "bomb"){ 
       fruitDropped ++;
-      console.log("FRUIT HAS BEEN DROPPED           IS DEAD");
       return true;
     }
 
-    //the fruit is off the screen but was not hit by the blade
-    if (this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && this.type !== "bomb"){ 
-      console.log("FRUIT OFF SCREEN NOT DEAD");
+    //the fruit is off the screen but was hit by the blade
+    if (this.y > windowHeight && this.x !== this.startX && this.reachedtopY && this.type !== "bomb"){ 
       return true;
     }
     return false;
@@ -422,15 +421,18 @@ let splatterArray = [];
 function draw() {
   imageMode(CENTER);
 
+  if(showingBlade){
+    imageMode(CORNER); 
+    noTint();
+    image(blade, mouseX, mouseY, bladeWidth, bladeHeight);
+  }
   //the screens
   if(startingScreen){
     startScreen();
-    console.log("STARTING SCREEN IS ON");
   }
 
   else if(otherOptionsScreen){
     gameOptionsScreeen();
-    console.log("OTHEROPTIONS           SCREEN CHANGE");
   }
 
   else if(playingGame){
@@ -440,7 +442,6 @@ function draw() {
   else if(gameOver){
     deathScreeen();
   }
-  //console.log(fruitDropped);
 }
 
 function spawnFruit(){
@@ -455,13 +456,10 @@ function spawnSplatter(x, y){//NEED TO CALL THIS SOMEWHERE BUT STILL GET THE VAR
   splatterArray.push(theSplatter);
 }
 
-// function mouseDragged(){
-//   //display blade here
-//   imageMode(CORNER); 
-//   noTint();
-//   image(blade, mouseX, mouseY, bladeWidth, bladeHeight);
-//   console.log("hasgfosdhgosd");
-// }
+function mouseDragged(){
+  //display blade here
+  showingBlade = true;
+}
 
 function gamingScreeen(){
   //when you are playing the actual game
@@ -526,12 +524,14 @@ function deathScreeen(){
   noLoop();
   imageMode(CENTER);
   noTint();
-  image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+  threeSecTimer.start();
   playingMusic.pause();
   if(!openingMusic.isPlaying()){
     openingMusic.play();
     openingMusic.setLoop(true);
   }
+  background("white");
+  image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
   fruitInCircles();
 }
 
@@ -583,21 +583,18 @@ function fruitInCircles(){
   if(mouseIsPressed){
     //fruit on starting screen
     //new game has been selected
-    // console.log("game over", gameOver);
-    // console.log("playing game", playingGame);
-    console.log("start screen", startingScreen);
-    console.log("options screen", otherOptionsScreen);
     if((dist(windowWidth/20 * 10, windowHeight/16.5 * 10, mouseX, mouseY) <  windowHeight/16) && startingScreen){
       playingGame = true;
       startingScreen = false;
       otherOptionsScreen = false;
     }
-
+    
     //other options have been selected
-    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && startingScreen){ //this is being executed and other options screen is being seen as true
+    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && startingScreen){ 
       otherOptionsScreen = true;
       startingScreen = false;
       playingGame = false;
+      threeSecTimer.start();
     }
 
     //fruit on game over screen
@@ -618,9 +615,11 @@ function fruitInCircles(){
     //fruit on other options screen
     //back to home screen has been selected
     if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && otherOptionsScreen){
-      otherOptionsScreen = false;
-      playingGame = false;
-      startingScreen = true;
+      if(threeSecTimer.expired()){
+        otherOptionsScreen = false;
+        playingGame = false;
+        startingScreen = true;
+      }
     }
   }
 }
