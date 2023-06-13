@@ -2,15 +2,23 @@
 // Macayla Buckmaster
 // Date
 
-//get fruit to appear in time with game settings
-//create fruit splatter
-//add x's to playing screen
-//add scoring system
+//1 other options doesn't change screens 
+//2 doesn't always detect when a fruit was dropped. 
+//2 fruit still on screen when deathscreen called from inside gamescreeen
+//3 options on game over screen don't work
+//4 blade doesn't show up, almost like the draw loop is moving too quickly for it to appear because the function works with console log
+//5 create fruit splatter
+//6 add x's to the screen
 
 //4 blade isn't showing on screen, mouse dragged is executing but not showing up.
+//starting screeen, both fruit work
+//other options screen something wrong with variables
+//game over, one fruit appearing, neither work
+//isn't detecting when only three fruit have droppwd, 6? or something
+//after no loop is called the code runs once more before stopping.
 
 //global variables
-let fruitDroppedArray = [];
+let fruitDropped = 0;
 let fruitSliced = false;
 let playingGame = false;
 let timerforFruit = 1500;
@@ -147,13 +155,17 @@ class Fruit{
 
   display(){
     //check what fruit, if sliced then display it, change if sliced
+
+    //make the image rotate and move across the screen
     imageMode(CENTER); 
     noTint();
     push();
     translate(this.x, this.y);
     rotate(this.time); 
+
     if (this.type === "watermelon"){
       if (this.possibleSlice){
+        //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(watermelonBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 100);
         }
@@ -162,11 +174,14 @@ class Fruit{
         }
       }
       else{
+        //whole fruit image
         image(watermelon, 0, 0, this.fruitWidth, this.fruitWidth + 100);
       }
     }
+
     else if (this.type === "orange"){
       if (this.possibleSlice){
+        //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(orangeBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
         }
@@ -175,27 +190,32 @@ class Fruit{
         }
       }
       else{
+        //whole fruit image
         image(orange, 0, 0, this.fruitWidth, this.fruitWidth);
       }
     }
+
     else if (this.type === "bomb"){
       if (this.possibleSlice){
+        //if it has been hit, it should explode
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft" || this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
           this.fruitWidth += 25;
           image(bombExploding, 0, 0, this.fruitWidth, this.fruitWidth);
           bombExplosion.play();
           if (this.fruitWidth >= 750){
-            pop();
             deathScreeen();
           }
         }
       }
       else{
+        //whole bomb image
         image(bomb, 0, 0, this.fruitWidth + 50, this.fruitWidth + 50);
       }
     }
+
     else if (this.type === "apple"){
       if (this.possibleSlice){
+        //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(appleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
         }
@@ -204,11 +224,14 @@ class Fruit{
         }
       }
       else{
+        //whole fruit image
         image(apple, 0, 0, this.fruitWidth, this.fruitWidth);
       }
     }
+
     else if (this.type === "mango"){
       if (this.possibleSlice){
+        //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(mangoBottomRight, 0, 0, this.fruitWidth, this.fruitWidth);
         }
@@ -217,11 +240,14 @@ class Fruit{
         }
       }
       else{
+        //whole fruit image
         image(mango, 0, 0, this.fruitWidth, this.fruitWidth);
       }
     }
+
     else if (this.type === "banana"){
       if (this.possibleSlice){
+        //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(bananaBottomRight, 0, 0, this.fruitWidth + 100, this.fruitWidth);
         }
@@ -230,11 +256,14 @@ class Fruit{
         }
       }
       else{
+        //whole fruit image
         image(banana, 0, 0, this.fruitWidth + 100, this.fruitWidth);
       }
     }
+
     else if (this.type === "pineapple"){
       if (this.possibleSlice){
+        //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
           image(pineappleBottomRight, 0, 0, this.fruitWidth, this.fruitWidth + 200);
         }
@@ -243,15 +272,19 @@ class Fruit{
         }
       }
       else{
+        //whole fruit image
         image(pineapple, 0, 0, this.fruitWidth, this.fruitWidth + 200);
       }
     }
+
     pop();
     this.time += 5;
   }
 
   gravity(){
     //fruit moves up then down, and to the opposite side of the screen from where its x first was
+
+    //if fruit starts on the left side
     if (this.startX < windowWidth/2){
       this.y += this.dy;
       this.x += this.dx;
@@ -259,6 +292,8 @@ class Fruit{
       this.dy += 0.4; 
       this.dx += 0.2;
     }
+
+    //if fruit starts on the right side
     else if (this.startX > windowWidth/2){
       this.y += this.dy;
       this.x += this.dx;
@@ -266,28 +301,35 @@ class Fruit{
       this.dy += 0.4; 
       this.dx -= 0.2;
     }
+
+    //changing a variable to be used to see if a fruit is dead or not
     if (this.y <= height/2){
       this.reachedtopY = true;
     }
   }
 
   isDead(){
-    //the fruit is off the screen and not sliced
-    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && (this.x > windowWidth || this.x < 0) && this.type !== "bomb"){ 
-      //the fruit is off the screen and was not hit by the blade
-      fruitDroppedArray.push(1);
+    //if the fruit is off the screen, and whether it is sliced or not
+
+    //the fruit is off the screen and was not hit by the blade
+    if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && this.type !== "bomb"){ 
+      fruitDropped ++;
+      console.log("FRUIT HAS BEEN DROPPED           IS DEAD");
       return true;
     }
-    if (this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && (this.x > windowWidth || this.x < 0) && this.type !== "bomb"){ 
-      //the fruit is off the screen and was
+
+    //the fruit is off the screen but was not hit by the blade
+    if (this.y > windowHeight && this.x !== this.startX && this.reachedtopY === true && this.type !== "bomb"){ 
+      console.log("FRUIT OFF SCREEN NOT DEAD");
       return true;
     }
     return false;
-
   }
 
   sliced(){
+    //checks to see if the fruit has been sliced by the mouse
     if (mouseIsPressed){
+      //sliced from the bottom right
       if ((mouseX > this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2) && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from bottom right corner 
         this.directionSliced = "bottomRight";
         this.possibleSlice = true;
@@ -295,6 +337,8 @@ class Fruit{
         let theSplatter = new Splatter(this.x, this.y);
         splatterArray.push(theSplatter);
       }
+
+      //sliced from the bottom left
       if ((mouseX < this.x + this.fruitWidth/2 && mouseY > this.y + this.fruitWidth/2)  && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from bottom left corner 
         this.directionSliced = "bottomLeft";
         this.possibleSlice = true;
@@ -302,6 +346,8 @@ class Fruit{
         let theSplatter = new Splatter(this.x, this.y);
         splatterArray.push(theSplatter);
       }
+
+      //sliced from the top right
       if ((mouseX > this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2) && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from top right corner 
         this.directionSliced = "topRight";
         this.possibleSlice = true;
@@ -309,6 +355,8 @@ class Fruit{
         let theSplatter = new Splatter(this.x, this.y);
         splatterArray.push(theSplatter);
       }
+
+      //sliced from the top left
       if ((mouseX < this.x + this.fruitWidth/2 && mouseY < this.y + this.fruitWidth/2)  && ((mouseY <= this.y + this.fruitWidth/2 && mouseY >= this.y - this.fruitWidth/2) && (mouseX <= this.x + this.fruitWidth/2 && mouseX >= this.x - this.fruitWidth/2))){ //cut from top right corner 
         this.directionSliced = "topLeft";
         this.possibleSlice = true;
@@ -331,6 +379,7 @@ class Splatter{
   }
 
   splatterFruit(){
+    //creates the images of splatter based on what type of fruit was hit
     tint(255, this.opacity);
     if(fruitType === "apple"){
       image(applesplatter, this.splatterX, this.splatterY, this.splatterWidth, this.splatterHeight);
@@ -353,11 +402,13 @@ class Splatter{
   }
 
   update(){
+    //gradually makes the image fade away and slide down the screen
     this.opacity -= 1;
     this.splatterY += 0.2;
   }
 
   isOpaque(){
+    //checks to see if the image is still visible or not
     if(this.opacity <= 0){
       return true;
     }
@@ -374,23 +425,32 @@ function draw() {
   //the screens
   if(startingScreen){
     startScreen();
+    console.log("STARTING SCREEN IS ON");
   }
 
-  if(otherOptionsScreen){
+  else if(otherOptionsScreen){
     gameOptionsScreeen();
+    console.log("OTHEROPTIONS           SCREEN CHANGE");
   }
 
-  if(playingGame){
+  else if(playingGame){
     gamingScreeen();
   }
+
+  else if(gameOver){
+    deathScreeen();
+  }
+  //console.log(fruitDropped);
 }
 
 function spawnFruit(){
+  //creates new fruit on the screen
   let theFruit = new Fruit();
   fruitArray.push(theFruit);
 }
 
 function spawnSplatter(x, y){//NEED TO CALL THIS SOMEWHERE BUT STILL GET THE VARIABLES FROM INSIDE FRUIT CLASS
+  //creates new splatter on the screen
   let theSplatter = new Splatter(x, y);
   splatterArray.push(theSplatter);
 }
@@ -404,14 +464,17 @@ function spawnSplatter(x, y){//NEED TO CALL THIS SOMEWHERE BUT STILL GET THE VAR
 // }
 
 function gamingScreeen(){
+  //when you are playing the actual game
   image(woodbackground, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
   openingMusic.pause();
   if(playingMusic.isPlaying() === false){
     playingMusic.play();
     playingMusic.setLoop(true);
   }
+
   //too many fruit dropped
-  if (fruitDroppedArray.length >= 3){
+  if (fruitDropped >= 3){
+    gameOver = true;
     deathScreeen();
   }
 
@@ -427,6 +490,7 @@ function gamingScreeen(){
     fruitSliced = false;
   }
 
+  //all the mechanics of the fruit
   for (let i = fruitArray.length - 1; i >= 0; i--){
     fruitArray[i].sliced();
     fruitArray[i].gravity();
@@ -437,6 +501,8 @@ function gamingScreeen(){
       fruitArray.splice(i, 1);
     }
   }
+
+  //all the mechanics of the fruit splatter
   // for (let s = splatterArray.length; s >= 0; s--){
   //   splatterArray[s].splatterFruit();
   //   splatterArray[s].update();
@@ -450,15 +516,13 @@ function gamingScreeen(){
 function startScreen(){
   //start screen
   noTint();
+  imageMode(CENTER);
   image(newgameScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-  playingMusic.setLoop(false);
-  openingMusic.setLoop(false); //STOP NOT FALSE
   fruitInCircles();
 }
 
 function deathScreeen(){
-  //too many fruit dropped before it was sliced, game over
-  //or bomb was hit
+  //too many fruit dropped before it was sliced or a bomb was hit, game over
   noLoop();
   imageMode(CENTER);
   noTint();
@@ -472,14 +536,21 @@ function deathScreeen(){
 }
 
 function gameOptionsScreeen(){
+  //other options have been selected from the start screen
+  noTint();
+  imageMode(CENTER);
   volumeSlider = createSlider(0, 100, 75, 5);
   volumeSlider.position(windowWidth/4, windowHeight/2);
+  image(optionsscreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
   fruitInCircles();
 }
 
 function fruitInCircles(){
-  //fruit in circle closer to middle
+  //places images in the circles on the screen based on window size
+  noTint();
   imageMode(CENTER);
+
+  //fruit in circle closer to middle
   if(startingScreen || gameOver){
     if(circleFruit === "watermelon"){
       image(watermelon, (windowWidth/20)* 10, (windowHeight/16.5) * 10, windowHeight/8, windowHeight/8);
@@ -509,16 +580,13 @@ function fruitInCircles(){
     image(mango, (windowWidth/12.8)* 10, (windowHeight/13.8) * 10, windowHeight/8, windowHeight/8);
   }
 
-  //for the new game one near centre
-  //dist(windowWidth/20 * 10, windowHeight/16.5 * 10, mouseX, mouseY) <  windowHeight/16
-  //(mouseX < windowWidth/20 * 10 + windowWidth/40) && (mouseX > windowWidth/20 * 10 - windowWidth/40) && (mouseX < windowHeight/16.5 * 10 + windowHeight/33) && (mouseY > windowHeight/16.5 * 10 - windowHeight/33) && startingScreen)
-
-  //for the one near the edge
-  //(dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16)
-  //(mouseX < windowWidth/12.8 * 10 + windowWidth/25.6)  && (mouseX > windowWidth/12.8 * 10 - windowWidth/25.6) && (mouseY  < windowHeight/13.8 * 10 + windowHeight/17.6) && (mouseY  < windowHeight/13.8 * 10 - windowHeight/17.6)
   if(mouseIsPressed){
     //fruit on starting screen
     //new game has been selected
+    // console.log("game over", gameOver);
+    // console.log("playing game", playingGame);
+    console.log("start screen", startingScreen);
+    console.log("options screen", otherOptionsScreen);
     if((dist(windowWidth/20 * 10, windowHeight/16.5 * 10, mouseX, mouseY) <  windowHeight/16) && startingScreen){
       playingGame = true;
       startingScreen = false;
@@ -526,7 +594,7 @@ function fruitInCircles(){
     }
 
     //other options have been selected
-    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && startingScreen){
+    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && startingScreen){ //this is being executed and other options screen is being seen as true
       otherOptionsScreen = true;
       startingScreen = false;
       playingGame = false;
@@ -549,7 +617,7 @@ function fruitInCircles(){
 
     //fruit on other options screen
     //back to home screen has been selected
-    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && gameOver){
+    if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && otherOptionsScreen){
       otherOptionsScreen = false;
       playingGame = false;
       startingScreen = true;
