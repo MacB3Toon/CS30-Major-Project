@@ -8,7 +8,8 @@
 //6 add x's to the screen
 
 //showing blade??????????????????????????????
-//cannot use const for splatter x or y its odd. 
+//cannot use const for splatter x or y its odd. make a state for splatters.
+//deathscreeen maybe isn't being called correctly?  
 //game over, one fruit appearing, neither work, the image is on an angle
 
 //global variables
