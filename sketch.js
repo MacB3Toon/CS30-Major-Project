@@ -2,7 +2,7 @@
 // Macayla Buckmaster
 // Monday July 19th, 2023
 
-//understand output volume
+//understand output volume - it works just 
 //4 blade doesn't show up, almost like the draw loop is moving too quickly for it to appear because the function works with console log
 //5 create fruit splatter
 //6 add x's to the screen
