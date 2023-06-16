@@ -2,19 +2,13 @@
 // Macayla Buckmaster
 // Monday July 19th, 2023
 
+//understand output volume
 //4 blade doesn't show up, almost like the draw loop is moving too quickly for it to appear because the function works with console log
 //5 create fruit splatter
 //6 add x's to the screen
 
-//figure out how to determine switch between game options and home screen better
 //showing blade??????????????????????????????
-
-//4 blade isn't showing on screen, mouse dragged is executing but not showing up.
-//starting screeen, both fruit work
-//other options screen something wrong with variables
-//game over, one fruit appearing, neither work
-//isn't detecting when only three fruit have droppwd, 6? or something
-//after no loop is called the code runs once more before stopping.
+//game over, one fruit appearing, neither work, the image is on an angle
 
 //global variables
 let fruitDropped = 0;
@@ -34,6 +28,7 @@ let edgecircleFruit;
 let volumeSlider;
 let otherOptionsScreen = false;
 let threeSecTimer;
+let volumeChange;
 
 //images
 let fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
@@ -129,6 +124,7 @@ function setup() { //setting up the basics of the game
 
   circleFruit = random(circleFruits);
   edgecircleFruit = random(circleFruits);
+  volumeSlider = createSlider(0, 100, 75, 5);
 
   imageMode(CENTER); 
   angleMode(DEGREES);
@@ -160,11 +156,11 @@ class Fruit{
     //make the image rotate and move across the screen
     imageMode(CENTER); 
     noTint();
-    push();
-    translate(this.x, this.y);
-    rotate(this.time); 
 
     if (this.type === "watermelon"){
+      push();
+      translate(this.x, this.y);
+      rotate(this.time); 
       if (this.possibleSlice){
         //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
@@ -178,9 +174,13 @@ class Fruit{
         //whole fruit image
         image(watermelon, 0, 0, this.fruitWidth, this.fruitWidth + 100);
       }
+      pop();
     }
 
     else if (this.type === "orange"){
+      push();
+      translate(this.x, this.y);
+      rotate(this.time); 
       if (this.possibleSlice){
         //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
@@ -194,27 +194,37 @@ class Fruit{
         //whole fruit image
         image(orange, 0, 0, this.fruitWidth, this.fruitWidth);
       }
+      pop()
     }
 
     else if (this.type === "bomb"){
+      push();
+      translate(this.x, this.y);
+      rotate(this.time); 
       if (this.possibleSlice){
         //if it has been hit, it should explode
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft" || this.directionSliced === "bottomLeft" || this.directionSliced === "topRight"){
           this.fruitWidth += 25;
           image(bombExploding, 0, 0, this.fruitWidth, this.fruitWidth);
+          bombExplosion.setVolume(1, 3);
           bombExplosion.play();
           if (this.fruitWidth >= 750){
             deathScreeen();
           }
+          pop();
         }
       }
       else{
         //whole bomb image
         image(bomb, 0, 0, this.fruitWidth + 50, this.fruitWidth + 50);
       }
+      pop();
     }
 
     else if (this.type === "apple"){
+      push();
+      translate(this.x, this.y);
+      rotate(this.time); 
       if (this.possibleSlice){
         //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
@@ -228,9 +238,13 @@ class Fruit{
         //whole fruit image
         image(apple, 0, 0, this.fruitWidth, this.fruitWidth);
       }
+      pop();
     }
 
     else if (this.type === "mango"){
+      push();
+      translate(this.x, this.y);
+      rotate(this.time); 
       if (this.possibleSlice){
         //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
@@ -244,9 +258,13 @@ class Fruit{
         //whole fruit image
         image(mango, 0, 0, this.fruitWidth, this.fruitWidth);
       }
+      pop();
     }
 
     else if (this.type === "banana"){
+      push();
+      translate(this.x, this.y);
+      rotate(this.time); 
       if (this.possibleSlice){
         //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
@@ -260,9 +278,13 @@ class Fruit{
         //whole fruit image
         image(banana, 0, 0, this.fruitWidth + 100, this.fruitWidth);
       }
+      pop();
     }
 
     else if (this.type === "pineapple"){
+      push();
+      translate(this.x, this.y);
+      rotate(this.time); 
       if (this.possibleSlice){
         //if it has been sliced, display the image based on what angle it was sliced at
         if (this.directionSliced === "bottomRight" || this.directionSliced === "topLeft"){
@@ -276,9 +298,8 @@ class Fruit{
         //whole fruit image
         image(pineapple, 0, 0, this.fruitWidth, this.fruitWidth + 200);
       }
+      pop();
     }
-
-    pop();
     this.time += 5;
   }
 
@@ -425,7 +446,10 @@ function draw() {
     imageMode(CORNER); 
     noTint();
     image(blade, mouseX, mouseY, bladeWidth, bladeHeight);
+    imageMode(CENTER);
+    showingBlade = false;
   }
+
   //the screens
   if(startingScreen){
     startScreen();
@@ -457,8 +481,9 @@ function spawnSplatter(x, y){//NEED TO CALL THIS SOMEWHERE BUT STILL GET THE VAR
 }
 
 function mouseDragged(){
-  //display blade here
-  showingBlade = true;
+  if(gamingScreeen){
+    showingBlade = true;
+  }
 }
 
 function gamingScreeen(){
@@ -521,27 +546,31 @@ function startScreen(){
 
 function deathScreeen(){
   //too many fruit dropped before it was sliced or a bomb was hit, game over
-  noLoop();
   imageMode(CENTER);
   noTint();
-  threeSecTimer.start();
+  clear();
+  noLoop();
   playingMusic.pause();
   if(!openingMusic.isPlaying()){
     openingMusic.play();
     openingMusic.setLoop(true);
   }
-  background("white");
   image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
   fruitInCircles();
+  bombExploding.pause();
+  loop();
 }
 
 function gameOptionsScreeen(){
   //other options have been selected from the start screen
   noTint();
+  playingMusic.stop();
   imageMode(CENTER);
-  volumeSlider = createSlider(0, 100, 75, 5);
-  volumeSlider.position(windowWidth/4, windowHeight/2);
+  volumeChange = volumeSlider.value();
+  textSize(30);
   image(optionsscreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+  text("Change the volume:", windowWidth/4 - 50, windowHeight/2 - 25);
+  volumeSlider.position(windowWidth/4, windowHeight/2);
   fruitInCircles();
 }
 
@@ -591,9 +620,11 @@ function fruitInCircles(){
     
     //other options have been selected
     if((dist(windowWidth/12.8 * 10, windowHeight/13.8 * 10, mouseX, mouseY) < windowHeight/16) && startingScreen){ 
-      otherOptionsScreen = true;
-      startingScreen = false;
-      playingGame = false;
+      if(threeSecTimer.expired()){
+        otherOptionsScreen = true;
+        startingScreen = false;
+        playingGame = false;
+      }
       threeSecTimer.start();
     }
 
@@ -620,6 +651,7 @@ function fruitInCircles(){
         playingGame = false;
         startingScreen = true;
       }
+      threeSecTimer.start();
     }
   }
 }
