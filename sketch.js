@@ -21,6 +21,7 @@ let otherOptionsScreen = false;
 let threeSecTimer;
 let volumeChange;
 let fruits = ["watermelon", "bomb", "orange", "apple", "mango", "banana", "pineapple"];
+let fruitHit = 0;
 
 //images
 let watermelon;
@@ -324,11 +325,13 @@ class Fruit{
     //the fruit is off the screen and was not hit by the blade
     if (this.possibleSlice === false && this.y > windowHeight && this.x !== this.startX && this.reachedtopY && this.type !== "bomb"){ 
       fruitDropped ++;
+      timerforFruit - 10;
       return true;
     }
 
     //the fruit is off the screen but was hit by the blade
     if (this.y > windowHeight && this.x !== this.startX && this.reachedtopY && this.type !== "bomb"){ 
+      fruitHit ++;
       return true; 
     }
     return false;
@@ -407,6 +410,11 @@ function gamingScreeen(){
   startingScreen = false;
   image(woodbackground, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
 
+  fill("white");
+  textSize(45);
+  text("Number of fruit hit " + fruitHit, windowWidth/16, windowHeight/8);
+  fill("black");
+
   //the X's on the top right corner
   if (fruitDropped === 0){
     image(nofruitDropped, windowWidth/5 * 3.75, windowHeight/6);
@@ -482,6 +490,12 @@ function deathScreeen(){
     openingMusic.setLoop(true);
   }
   image(gameoverScreen, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+
+  fill("white");
+  textSize(45);
+  text("Number of fruit hit " + fruitHit, windowWidth/3, windowHeight/8);
+  fill("black");
+
   fruitInCircles();
   bombExploding.pause();
 }
@@ -568,6 +582,9 @@ function fruitInCircles(){
         otherOptionsScreen = false;
         gameOver = false;
       }
+      fruitArray = [];
+      fruitDropped = 0;
+      fruitHit = 0;
       threeSecTimer.start();
     }
 
